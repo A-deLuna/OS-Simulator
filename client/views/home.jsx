@@ -4,6 +4,7 @@ import { Clock } from './clock';
 import { Properties } from './properties';
 import * as TimeActions from '../creators/time';
 import * as SpeedActions from '../creators/speed';
+import * as SpawnActions from '../creators/spawnActions';
 
 @connect(state => ({
   time : state.time,
@@ -60,13 +61,19 @@ export default class HomeView extends React.Component {
     this.props.dispatch(SpeedActions.fast());
   }
 
+  _spawnProbability (probabilityS) {
+    prob = Number(probabilityS);
+    this.props.dispatch(SpawnActions.setRate(prob));
+  }
+
   render () {
     return (
       <div className='container text-center'>
         <Clock time={this.props.time}/>
         <Properties slow={::this._slowClock}
                     normal={::this._normalClock}
-                    fast={::this._fastClock}/>
+                    fast={::this._fastClock}
+                    spawnHandler={::this._spawnProbability}/>
         <button onClick={this._pause.bind(this)}>Pause</button>
         <button onClick={this._resume.bind(this)}>Resume</button>
       </div>

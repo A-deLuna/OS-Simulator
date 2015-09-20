@@ -2,7 +2,8 @@ import React from 'react';
 
 export class SpawningProbabilitySelector extends React.Component {
   static propTypes = {
-    setSpawningProbability : React.PropTypes.func.isRequired
+    setSpawningProbability : React.PropTypes.func.isRequired,
+    spawnRate: React.PropTypes.number.isRequired
   }
 
   handleChange(e) {
@@ -10,9 +11,11 @@ export class SpawningProbabilitySelector extends React.Component {
   }
 
   render () {
+    const spawnRate = this.props.spawnRate;
     return (
       <div>
-        <input type='text' onChange={this.handleChange.bind(this)} />
+        <input type='text' onChange={this.handleChange.bind(this)}
+                           value={spawnRate}/>
       </div>
     );
   }

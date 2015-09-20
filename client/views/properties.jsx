@@ -7,14 +7,17 @@ export class Properties extends React.Component {
     slow: React.PropTypes.func.isRequired,
     normal: React.PropTypes.func.isRequired,
     fast: React.PropTypes.func.isRequired,
-    spawnHandler : React.PropTypes.func.isRequired
+    spawnHandler : React.PropTypes.func.isRequired,
+    spawnRate: React.PropTypes.number.isRequired
   }
 
   render() {
+    const spawnHandler = this.props.spawnHandler;
     return (
       <div>
         <SpeedChooser {...this.props} />
-        <SpawningProbabilitySelector setSpawningProbability={this.props.spawnHandler} />
+        <SpawningProbabilitySelector setSpawningProbability={spawnHandler}
+                                     spawnRate={this.props.spawnRate}/>
       </div>
     );
   }

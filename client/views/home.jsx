@@ -9,14 +9,16 @@ import * as SpawnActions from '../creators/spawnActions';
 @connect(state => ({
   time : state.time,
   speed : state.speed,
-  clock : state.clock
+  clock : state.clock,
+  spawnRate: state.spawnRate
 }))
 export default class HomeView extends React.Component {
   static propTypes = {
     dispatch : React.PropTypes.func.isRequired,
     time : React.PropTypes.number.isRequired,
     speed : React.PropTypes.number.isRequired,
-    clock : React.PropTypes.string.isRequired
+    clock : React.PropTypes.string.isRequired,
+    spawnRate: React.PropTypes.number.isRequired
   }
 
   constructor () {
@@ -62,7 +64,7 @@ export default class HomeView extends React.Component {
   }
 
   _spawnProbability (probabilityS) {
-    prob = Number(probabilityS);
+    const prob = Number(probabilityS);
     this.props.dispatch(SpawnActions.setRate(prob));
   }
 
@@ -73,7 +75,8 @@ export default class HomeView extends React.Component {
         <Properties slow={::this._slowClock}
                     normal={::this._normalClock}
                     fast={::this._fastClock}
-                    spawnHandler={::this._spawnProbability}/>
+                    spawnHandler={::this._spawnProbability}
+                    spawnRate={this.props.spawnRate}/>
         <button onClick={this._pause.bind(this)}>Pause</button>
         <button onClick={this._resume.bind(this)}>Resume</button>
       </div>

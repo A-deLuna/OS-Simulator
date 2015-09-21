@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class Clock extends React.Component {
+export default class Clock extends React.Component {
   static propTypes = {
     time : React.PropTypes.number.isRequired
   }

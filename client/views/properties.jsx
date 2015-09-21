@@ -2,7 +2,7 @@ import React from 'react';
 import { SpeedChooser } from './speedChooser';
 import { SpawningProbabilitySelector } from './spawningProbabilitySelector';
 
-export class Properties extends React.Component {
+export default class Properties extends React.Component {
   static propTypes = {
     slow: React.PropTypes.func.isRequired,
     normal: React.PropTypes.func.isRequired,

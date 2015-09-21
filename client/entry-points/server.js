@@ -10,7 +10,7 @@ export default function render (request) {
     const location = new Location(request.path, request.query);
 
     try {
-      Router.run(routes, location, function (error, initialState) {
+      Router.run(routes, location, (error, initialState) => {
         if (error) {
           throw error;
         } else if (!initialState) {

@@ -6,7 +6,7 @@ import PCB from './pcb';
 import Properties from './properties';
 import * as TimeActions from '../creators/time';
 import * as SpeedActions from '../creators/speed';
-import * as SpawnActions from '../creators/spawnActions';
+import * as ProcessActions from '../creators/spawnActions';
 
 @connect(state => ({
   time : state.time,
@@ -15,6 +15,7 @@ import * as SpawnActions from '../creators/spawnActions';
   spawnRate: state.spawnRate,
   processes: state.processes
 }))
+
 export default class HomeView extends React.Component {
   static propTypes = {
     dispatch : React.PropTypes.func.isRequired,
@@ -23,7 +24,6 @@ export default class HomeView extends React.Component {
     clock : React.PropTypes.string.isRequired,
     spawnRate: React.PropTypes.number.isRequired,
     processes: React.PropTypes.object.isRequired
-
   }
 
   constructor () {
@@ -41,11 +41,19 @@ export default class HomeView extends React.Component {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  isRunningEmpty() {
+    return Object.getOwnPropertyNames(this.props.processes.runningProcess).length === 0;
+  }
+
   timeoutCallback () {
     if (this.props.clock === 'RUNNING') {
+      if (this.isRunningEmpty()) {
+        this.props.dispatch(ProcessActions.takeOneReadyToRunning());
+        this.props.dispatch(ProcessActions.moveNewToReady());
+      }
       const randomProb = this.getRandomIntInclusive(1, 100);
       if (randomProb <= this.props.spawnRate) {
-        this.props.dispatch(SpawnActions.spawnProcessNew(this.props.time, 10, 8));
+        this.props.dispatch(ProcessActions.spawnProcessNew(this.props.time, 10, 8));
       }
       this.props.dispatch(TimeActions.timeTick());
       setTimeout(this.timeoutCallback, this.props.speed);
@@ -80,7 +88,7 @@ export default class HomeView extends React.Component {
 
   _spawnProbability (probabilityS) {
     const prob = Number(probabilityS);
-    this.props.dispatch(SpawnActions.setRate(prob));
+    this.props.dispatch(ProcessActions.setRate(prob));
   }
 
   render () {

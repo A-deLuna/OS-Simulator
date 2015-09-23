@@ -50,7 +50,14 @@ export default class HomeView extends React.Component {
       if (this.isRunningEmpty()) {
         this.props.dispatch(ProcessActions.takeOneReadyToRunning());
         this.props.dispatch(ProcessActions.moveNewToReady());
+      } else {
+        this.props.dispatch(ProcessActions.tickRunningProcess());
+        const runningProcess = this.props.processes.runningProcess;
+        if (runningProcess.currentCPUTime >= runningProcess.totalCPUTime) {
+          this.props.dispatch(ProcessActions.moveRunningToFinished());
+        }
       }
+
       const randomProb = this.getRandomIntInclusive(1, 100);
       if (randomProb <= this.props.spawnRate) {
         this.props.dispatch(ProcessActions.spawnProcessNew(this.props.time, 10, 8));

@@ -2,6 +2,7 @@ import React from 'react';
 import NewList from './newList';
 import ReadyList from './readyList';
 import RunningView from './runningView';
+import FinishedList from './finishedList';
 
 export default class Lists extends React.Component {
   static propTypes = {
@@ -18,6 +19,7 @@ export default class Lists extends React.Component {
         <NewList newProcesses={this.props.processes.newProcesses}/>
         <ReadyList readyProcesses={this.props.processes.readyProcesses}/>
         <RunningView runningProcess={this.props.processes.runningProcess}/>
+        <FinishedList finishedProcesses={this.props.processes.finishedProcesses}/>
       </div>
     );
   }

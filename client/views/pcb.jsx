@@ -21,9 +21,10 @@ export default class PCB extends React.Component {
     const nodes = array.map((process) => {
       return (
         <tr>
-          <td>{process.id}</td>
+          <td>P {process.id}</td>
           <td>{process.arrivalTime}</td>
-          <td>{process.CPUTime}</td>
+          <td>{process.totalCPUTime}</td>
+          <td>{process.currentCPUTime}</td>
           <td>{process.IOTime}</td>
         </tr>
       );
@@ -37,6 +38,7 @@ export default class PCB extends React.Component {
             <th>id</th>
             <th>tiempo de llegada</th>
             <th>uso de cpu</th>
+            <th>tiempo acum. de uso</th>
             <th>hora de uso de I/O</th>
           </tr>
           <tbody>

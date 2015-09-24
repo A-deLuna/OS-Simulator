@@ -32,3 +32,7 @@ export function tickRunningProcess() {
 export function moveRunningToFinished() {
   return {type: ProcessConstants.MOVE_RUNNING_TO_FINISHED};
 }
+
+export function moveRunningToReady() {
+  return {type: ProcessConstants.MOVE_RUNNING_TO_READY};
+}

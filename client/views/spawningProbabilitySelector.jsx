@@ -13,7 +13,8 @@ export class SpawningProbabilitySelector extends React.Component {
   render () {
     const spawnRate = this.props.spawnRate;
     return (
-      <div>
+      <div className='row'>
+        <span>spawn probablility</span>
         <input type='text' onChange={this.handleChange.bind(this)}
                            value={spawnRate}/>
       </div>

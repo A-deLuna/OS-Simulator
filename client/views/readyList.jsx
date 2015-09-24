@@ -11,7 +11,7 @@ export default class ReadyList extends React.Component {
   render () {
     const nodes = this.props.readyProcesses.map((process) => {
       return (
-        <p>P {process.id}</p>
+        <p key={process.id}>P{process.id}</p>
       );
     });
     return (

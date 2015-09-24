@@ -7,13 +7,15 @@ import Properties from './properties';
 import * as TimeActions from '../creators/time';
 import * as SpeedActions from '../creators/speed';
 import * as ProcessActions from '../creators/spawnActions';
+import * as QuantumActions from '../creators/quantum';
 
 @connect(state => ({
   time : state.time,
   speed : state.speed,
   clock : state.clock,
   spawnRate: state.spawnRate,
-  processes: state.processes
+  processes: state.processes,
+  quantum: state.quantum
 }))
 
 export default class HomeView extends React.Component {
@@ -23,7 +25,8 @@ export default class HomeView extends React.Component {
     speed : React.PropTypes.number.isRequired,
     clock : React.PropTypes.string.isRequired,
     spawnRate: React.PropTypes.number.isRequired,
-    processes: React.PropTypes.object.isRequired
+    processes: React.PropTypes.object.isRequired,
+    quantum: React.PropTypes.object.isRequired
   }
 
   constructor () {
@@ -52,9 +55,17 @@ export default class HomeView extends React.Component {
         this.props.dispatch(ProcessActions.moveNewToReady());
       } else {
         this.props.dispatch(ProcessActions.tickRunningProcess());
+        this.props.dispatch(QuantumActions.quantumTick());
+
         const runningProcess = this.props.processes.runningProcess;
         if (runningProcess.currentCPUTime >= runningProcess.totalCPUTime) {
           this.props.dispatch(ProcessActions.moveRunningToFinished());
+          this.props.dispatch(QuantumActions.restartQuantum());
+        } else {
+          if (this.props.quantum.running >= this.props.quantum.limit) {
+            this.props.dispatch(ProcessActions.moveRunningToReady());
+            this.props.dispatch(QuantumActions.restartQuantum());
+          }
         }
       }
 
@@ -98,18 +109,33 @@ export default class HomeView extends React.Component {
     this.props.dispatch(ProcessActions.setRate(prob));
   }
 
+  _quantumLimit(limit) {
+    const lim = Number(limit);
+    this.props.dispatch(QuantumActions.setQuantumLimit(lim));
+  }
+
   render () {
     return (
       <div className='container text-center'>
-        <Clock time={this.props.time}/>
-        <Lists processes={this.props.processes}/>
-        <Properties slow={::this._slowClock}
-                    normal={::this._normalClock}
-                    fast={::this._fastClock}
-                    spawnHandler={::this._spawnProbability}
-                    spawnRate={this.props.spawnRate}/>
-        <button onClick={this._pause.bind(this)}>Pause</button>
-        <button onClick={this._resume.bind(this)}>Resume</button>
+        <div className='row'>
+          <div className='col-md-3'>
+            <Properties slow={::this._slowClock}
+                        normal={::this._normalClock}
+                        fast={::this._fastClock}
+                        spawnHandler={::this._spawnProbability}
+                        spawnRate={this.props.spawnRate}
+                        quantumLimit={::this._quantumLimit}
+                        quantum={this.props.quantum}/>
+            <button onClick={this._pause.bind(this)}>Pause</button>
+            <button onClick={this._resume.bind(this)}>Resume</button>
+          </div>
+          <div className='col-md-9'>
+            <div className='row'>
+              <Clock time={this.props.time}/>
+              <Lists processes={this.props.processes}/>
+            </div>
+          </div>
+        </div>
         <PCB processes={this.props.processes}/>
       </div>
     );

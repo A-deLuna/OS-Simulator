@@ -48,5 +48,12 @@ export default createReducer(initialState, {
       finishedProcesses: [...state.finishedProcesses, state.runningProcess],
       runningProcess: {}
     });
+  },
+
+  [ProcessConstants.MOVE_RUNNING_TO_READY]: (state) => {
+    return Object.assign({}, state, {
+      readyProcesses: [...state.readyProcesses, state.runningProcess],
+      runningProcess: {}
+    });
   }
 });

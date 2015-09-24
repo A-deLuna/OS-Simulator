@@ -1,5 +1,5 @@
 import { createReducer } from 'utils';
-import { SPAWN_PROCESS_NEW, MOVE_NEW_TO_READY, TAKE_ONE_READY_TO_RUNNING} from '../constants/Spawn';
+import * as ProcessConstants from '../constants/Spawn';
 const initialState = {
   newProcesses: [],
   readyProcesses: [],
@@ -10,27 +10,43 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [SPAWN_PROCESS_NEW] : (state, payload) => {
+  [ProcessConstants.SPAWN_PROCESS_NEW] : (state, payload) => {
     return Object.assign({}, state,
       {
         newProcesses: [...state.newProcesses,
          {id: payload.id,
            arrivalTime: payload.arrivalTime,
-           CPUTime: payload.CPUTime,
+           currentCPUTime: 0,
+           totalCPUTime: payload.CPUTime,
            IOTime: payload.IOTime}]
       });
   },
 
-  [MOVE_NEW_TO_READY] : (state) => {
+  [ProcessConstants.MOVE_NEW_TO_READY] : (state) => {
     return Object.assign({}, state, {
       readyProcesses: [...state.readyProcesses,
           ...state.newProcesses]},
           {newProcesses: []});
   },
 
-  [TAKE_ONE_READY_TO_RUNNING] : (state) => {
+  [ProcessConstants.TAKE_ONE_READY_TO_RUNNING] : (state) => {
     return Object.assign({}, state, {
       runningProcess: state.readyProcesses[0] ? state.readyProcesses[0] : {},
       readyProcesses: [...state.readyProcesses.slice(1)]});
+  },
+
+  [ProcessConstants.TICK_RUNNING_PROCESS] : (state) => {
+    return Object.assign({}, state, {
+      runningProcess: Object.assign({}, state.runningProcess, {
+        currentCPUTime: state.runningProcess.currentCPUTime + 1
+      })
+    });
+  },
+
+  [ProcessConstants.MOVE_RUNNING_TO_FINISHED] : (state) => {
+    return Object.assign({}, state, {
+      finishedProcesses: [...state.finishedProcesses, state.runningProcess],
+      runningProcess: {}
+    });
   }
 });

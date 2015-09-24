@@ -11,7 +11,7 @@ export default class NewList extends React.Component {
   render () {
     const nodes = this.props.newProcesses.map((process) => {
       return (
-        <p>{process.id}</p>
+        <p>P{process.id}</p>
       );
     });
     return (

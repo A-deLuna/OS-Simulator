@@ -15,11 +15,18 @@ export default class Lists extends React.Component {
   render () {
     return (
       <div>
-        <h1> Listas </h1>
-        <NewList newProcesses={this.props.processes.newProcesses}/>
-        <ReadyList readyProcesses={this.props.processes.readyProcesses}/>
-        <RunningView runningProcess={this.props.processes.runningProcess}/>
-        <FinishedList finishedProcesses={this.props.processes.finishedProcesses}/>
+        <div className='col-md-2'>
+          <NewList newProcesses={this.props.processes.newProcesses}/>
+        </div>
+        <div className='col-md-2'>
+          <ReadyList readyProcesses={this.props.processes.readyProcesses}/>
+        </div>
+        <div className='col-md-2'>
+          <RunningView runningProcess={this.props.processes.runningProcess}/>
+        </div>
+        <div className='col-md-2'>
+          <FinishedList finishedProcesses={this.props.processes.finishedProcesses}/>
+        </div>
       </div>
     );
   }

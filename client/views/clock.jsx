@@ -11,7 +11,7 @@ export default class Clock extends React.Component {
 
   render () {
     return (
-      <div>
+      <div className='col-md-1'>
         <h1>Clock</h1>
         <h1>{this.props.time}</h1>
       </div>

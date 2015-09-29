@@ -55,5 +55,26 @@ export default createReducer(initialState, {
       readyProcesses: [...state.readyProcesses, state.runningProcess],
       runningProcess: {}
     });
+  },
+
+  [ProcessConstants.MOVE_RUNNING_TO_WAITING]: (state) => {
+    return Object.assign({}, state, {
+      waitingIOProcesses: [...state.waitingIOProcesses, state.runningProcess],
+      runningProcess: {}
+    });
+  },
+
+  [ProcessConstants.TAKE_ONE_WAITING_TO_USINGIO]: (state) => {
+    return Object.assign({}, state, {
+      usingIOProcess: state.waitingIOProcesses[0] ? state.waitingIOProcesses[0] : {},
+      waitingIOProcesses: [...state.waitingIOProcesses.slice(1)]
+    });
+  },
+
+  [ProcessConstants.MOVE_USINGIO_TO_READY]: (state) => {
+    return Object.assign({}, state, {
+      readyProcesses: [...state.readyProcesses, state.usingIOProcess],
+      usingIOProcess: {}
+    });
   }
 });

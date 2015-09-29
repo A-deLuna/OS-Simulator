@@ -5,6 +5,7 @@ import clock from './clock';
 import spawnRate from './spawnRate';
 import processes from './processes';
 import quantum from './quantum';
+import IO from './IO';
 
 export default combineReducers({
   time,
@@ -12,5 +13,6 @@ export default combineReducers({
   clock,
   spawnRate,
   processes,
-  quantum
+  quantum,
+  IO
 });

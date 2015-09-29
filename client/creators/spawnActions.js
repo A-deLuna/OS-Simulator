@@ -36,3 +36,15 @@ export function moveRunningToFinished() {
 export function moveRunningToReady() {
   return {type: ProcessConstants.MOVE_RUNNING_TO_READY};
 }
+
+export function moveRunningToWaiting() {
+  return {type: ProcessConstants.MOVE_RUNNING_TO_WAITING};
+}
+
+export function takeOneWaitingToUsingIO() {
+  return {type: ProcessConstants.TAKE_ONE_WAITING_TO_USINGIO};
+}
+
+export function moveUsingIOToReady() {
+  return {type: ProcessConstants.MOVE_USINGIO_TO_READY};
+}

@@ -8,6 +8,7 @@ import * as TimeActions from '../creators/time';
 import * as SpeedActions from '../creators/speed';
 import * as ProcessActions from '../creators/spawnActions';
 import * as QuantumActions from '../creators/quantum';
+import * as IOActions from '../creators/IO';
 
 @connect(state => ({
   time : state.time,
@@ -15,7 +16,8 @@ import * as QuantumActions from '../creators/quantum';
   clock : state.clock,
   spawnRate: state.spawnRate,
   processes: state.processes,
-  quantum: state.quantum
+  quantum: state.quantum,
+  IO: state.IO
 }))
 
 export default class HomeView extends React.Component {
@@ -26,7 +28,8 @@ export default class HomeView extends React.Component {
     clock : React.PropTypes.string.isRequired,
     spawnRate: React.PropTypes.number.isRequired,
     processes: React.PropTypes.object.isRequired,
-    quantum: React.PropTypes.object.isRequired
+    quantum: React.PropTypes.object.isRequired,
+    IO: React.PropTypes.object.isRequired
   }
 
   constructor () {
@@ -48,17 +51,42 @@ export default class HomeView extends React.Component {
     return Object.getOwnPropertyNames(this.props.processes.runningProcess).length === 0;
   }
 
+  isUsingIOEmpty () {
+    return Object.getOwnPropertyNames(this.props.processes.usingIOProcess).length === 0;
+  }
+
   timeoutCallback () {
     if (this.props.clock === 'RUNNING') {
+      if (this.isUsingIOEmpty()) {
+        this.props.dispatch(ProcessActions.takeOneWaitingToUsingIO());
+      }
+
       if (this.isRunningEmpty()) {
         this.props.dispatch(ProcessActions.takeOneReadyToRunning());
         this.props.dispatch(ProcessActions.moveNewToReady());
-      } else {
+      }
+
+      if (!this.isUsingIOEmpty()) {
+        this.props.dispatch(IOActions.tickIO());
+
+        if (this.props.IO.running >= this.props.IO.limit) {
+          this.props.dispatch(ProcessActions.moveUsingIOToReady());
+          this.props.dispatch(IOActions.restartIO());
+        }
+      }
+
+      if (!this.isRunningEmpty()) {
         this.props.dispatch(ProcessActions.tickRunningProcess());
         this.props.dispatch(QuantumActions.quantumTick());
 
         const runningProcess = this.props.processes.runningProcess;
-        if (runningProcess.currentCPUTime >= runningProcess.totalCPUTime) {
+
+        if (runningProcess.currentCPUTime === runningProcess.IOTime) {
+          this.props.dispatch(ProcessActions.moveRunningToWaiting());
+          this.props.dispatch(QuantumActions.restartQuantum());
+        }
+
+        if (runningProcess.currentCPUTime === runningProcess.totalCPUTime) {
           this.props.dispatch(ProcessActions.moveRunningToFinished());
           this.props.dispatch(QuantumActions.restartQuantum());
         } else {
@@ -114,6 +142,11 @@ export default class HomeView extends React.Component {
     this.props.dispatch(QuantumActions.setQuantumLimit(lim));
   }
 
+  _IOLimit(limit) {
+    const lim = Number(limit);
+    this.props.dispatch(IOActions.setIOLimit(lim));
+  }
+
   render () {
     return (
       <div className='container text-center'>
@@ -125,7 +158,9 @@ export default class HomeView extends React.Component {
                         spawnHandler={::this._spawnProbability}
                         spawnRate={this.props.spawnRate}
                         quantumLimit={::this._quantumLimit}
-                        quantum={this.props.quantum}/>
+                        quantum={this.props.quantum}
+                        IO={this.props.IO}
+                        IOLimit={::this._IOLimit}/>
             <button onClick={this._pause.bind(this)}>Pause</button>
             <button onClick={this._resume.bind(this)}>Resume</button>
           </div>

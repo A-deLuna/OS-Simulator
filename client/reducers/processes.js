@@ -1,5 +1,6 @@
 import { createReducer } from 'utils';
 import * as ProcessConstants from '../constants/Spawn';
+
 const initialState = {
   newProcesses: [],
   readyProcesses: [],
@@ -11,15 +12,17 @@ const initialState = {
 
 export default createReducer(initialState, {
   [ProcessConstants.SPAWN_PROCESS_NEW] : (state, payload) => {
-    return Object.assign({}, state,
-      {
-        newProcesses: [...state.newProcesses,
-         {id: payload.id,
-           arrivalTime: payload.arrivalTime,
-           currentCPUTime: 0,
-           totalCPUTime: payload.CPUTime,
-           IOTime: payload.IOTime}]
-      });
+    return Object.assign({}, state, {
+      newProcesses: [...state.newProcesses, {
+        id: payload.id,
+        arrivalTime: payload.arrivalTime,
+        currentCPUTime: 0,
+        totalCPUTime: payload.CPUTime,
+        IOTime: payload.IOTime,
+        IOGoalTime: 0,
+        finishedTime: 0
+      }]
+    });
   },
 
   [ProcessConstants.MOVE_NEW_TO_READY] : (state) => {
@@ -43,9 +46,11 @@ export default createReducer(initialState, {
     });
   },
 
-  [ProcessConstants.MOVE_RUNNING_TO_FINISHED] : (state) => {
+  [ProcessConstants.MOVE_RUNNING_TO_FINISHED] : (state, payload) => {
     return Object.assign({}, state, {
-      finishedProcesses: [...state.finishedProcesses, state.runningProcess],
+      finishedProcesses: [...state.finishedProcesses, Object.assign({}, state.runningProcess, {
+        finishedTime: payload.time
+      })],
       runningProcess: {}
     });
   },
@@ -64,9 +69,9 @@ export default createReducer(initialState, {
     });
   },
 
-  [ProcessConstants.TAKE_ONE_WAITING_TO_USINGIO]: (state) => {
+  [ProcessConstants.TAKE_ONE_WAITING_TO_USINGIO]: (state, payload) => {
     return Object.assign({}, state, {
-      usingIOProcess: state.waitingIOProcesses[0] ? state.waitingIOProcesses[0] : {},
+      usingIOProcess: state.waitingIOProcesses[0] ? Object.assign({}, state.waitingIOProcesses[0], {IOGoalTime: payload.goalTime} ) : {},
       waitingIOProcesses: [...state.waitingIOProcesses.slice(1)]
     });
   },

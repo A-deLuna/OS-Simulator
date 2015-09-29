@@ -3,6 +3,7 @@ import { SpeedChooser } from './speedChooser';
 import { SpawningProbabilitySelector } from './spawningProbabilitySelector';
 import QuantumEditor from './quantumEditor';
 import IOEditor from './IOEditor';
+import DurationAverage from './durationAverage';
 
 export default class Properties extends React.Component {
   static propTypes = {
@@ -14,7 +15,9 @@ export default class Properties extends React.Component {
     quantumLimit: React.PropTypes.func.isRequired,
     quantum: React.PropTypes.object.isRequired,
     IO: React.PropTypes.object.isRequired,
-    IOLimit: React.PropTypes.func.isRequired
+    IOLimit: React.PropTypes.func.isRequired,
+    durationAverage: React.PropTypes.number.isRequired,
+    setDurationAverage: React.PropTypes.func.isRequired
   }
 
   render() {
@@ -26,6 +29,7 @@ export default class Properties extends React.Component {
                                      spawnRate={this.props.spawnRate}/>
         <QuantumEditor quantum={this.props.quantum} quantumLimit={this.props.quantumLimit}/>
         <IOEditor IO={this.props.IO} setIOLimit={this.props.IOLimit}/>
+        <DurationAverage setDurationAverage={this.props.setDurationAverage} durationAverage={this.props.durationAverage}/>
       </div>
     );
   }

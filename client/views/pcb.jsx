@@ -31,6 +31,9 @@ export default class PCB extends React.Component {
           <td>{process.totalCPUTime}</td>
           <td>{process.currentCPUTime}</td>
           <td>{process.IOTime}</td>
+          <td>{process.IOGoalTime !== 0 ? process.IOGoalTime : ''}</td>
+          <td>{process.finishedTime !== 0 ? process.finishedTime : ''}</td>
+          <td>{process.finishedTime !== 0 ? process.finishedTime - process.arrivalTime : ''}</td>
         </tr>
       );
     });
@@ -46,6 +49,9 @@ export default class PCB extends React.Component {
               <th>uso de cpu</th>
               <th>tiempo acum. de uso</th>
               <th>hora de uso de I/O</th>
+              <th>tiempo de uso de I/O</th>
+              <th>tiempo de finalizacion</th>
+              <th>tiempo en el sistema</th>
             </tr>
           </thead>
           <tbody>

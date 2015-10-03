@@ -6,6 +6,7 @@ import spawnRate from './spawnRate';
 import processes from './processes';
 import quantum from './quantum';
 import IO from './IO';
+import durationAverage from './durationAverage';
 
 export default combineReducers({
   time,
@@ -14,5 +15,6 @@ export default combineReducers({
   spawnRate,
   processes,
   quantum,
-  IO
+  IO,
+  durationAverage
 });

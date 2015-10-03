@@ -9,6 +9,7 @@ import * as SpeedActions from '../creators/speed';
 import * as ProcessActions from '../creators/spawnActions';
 import * as QuantumActions from '../creators/quantum';
 import * as IOActions from '../creators/IO';
+import { setDurationAverage } from '../creators/duration';
 
 @connect(state => ({
   time : state.time,
@@ -17,7 +18,8 @@ import * as IOActions from '../creators/IO';
   spawnRate: state.spawnRate,
   processes: state.processes,
   quantum: state.quantum,
-  IO: state.IO
+  IO: state.IO,
+  durationAverage: state.durationAverage
 }))
 
 export default class HomeView extends React.Component {
@@ -29,7 +31,8 @@ export default class HomeView extends React.Component {
     spawnRate: React.PropTypes.number.isRequired,
     processes: React.PropTypes.object.isRequired,
     quantum: React.PropTypes.object.isRequired,
-    IO: React.PropTypes.object.isRequired
+    IO: React.PropTypes.object.isRequired,
+    durationAverage: React.PropTypes.number.isRequired
   }
 
   constructor () {
@@ -37,12 +40,12 @@ export default class HomeView extends React.Component {
     this._resume = this._resume.bind(this);
     this._pause = this._pause.bind(this);
     this.timeoutCallback = this.timeoutCallback.bind(this);
+    this.createNewProcessWithRandomValues = this.createNewProcessWithRandomValues.bind(this);
   }
 
   componentDidMount () {
     setTimeout(this.timeoutCallback, this.props.speed);
   }
-
   getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -55,10 +58,20 @@ export default class HomeView extends React.Component {
     return Object.getOwnPropertyNames(this.props.processes.usingIOProcess).length === 0;
   }
 
+  createNewProcessWithRandomValues() {
+    const durationAverage = this.props.durationAverage;
+    const low = Math.round(durationAverage * 0.75);
+    const high = Math.round(durationAverage * 1.25);
+    const duration = this.getRandomIntInclusive(low, high);
+    const ioTime = this.getRandomIntInclusive(2, duration - 1);
+
+    this.props.dispatch(ProcessActions.spawnProcessNew(this.props.time, duration, ioTime));
+  }
+
   timeoutCallback () {
     if (this.props.clock === 'RUNNING') {
       if (this.isUsingIOEmpty()) {
-        this.props.dispatch(ProcessActions.takeOneWaitingToUsingIO());
+        this.props.dispatch(ProcessActions.takeOneWaitingToUsingIO(this.props.IO.limit));
       }
 
       if (this.isRunningEmpty()) {
@@ -69,7 +82,7 @@ export default class HomeView extends React.Component {
       if (!this.isUsingIOEmpty()) {
         this.props.dispatch(IOActions.tickIO());
 
-        if (this.props.IO.running >= this.props.IO.limit) {
+        if (this.props.IO.running >= this.props.processes.usingIOProcess.IOGoalTime) {
           this.props.dispatch(ProcessActions.moveUsingIOToReady());
           this.props.dispatch(IOActions.restartIO());
         }
@@ -87,7 +100,7 @@ export default class HomeView extends React.Component {
         }
 
         if (runningProcess.currentCPUTime === runningProcess.totalCPUTime) {
-          this.props.dispatch(ProcessActions.moveRunningToFinished());
+          this.props.dispatch(ProcessActions.moveRunningToFinished(this.props.time));
           this.props.dispatch(QuantumActions.restartQuantum());
         } else {
           if (this.props.quantum.running >= this.props.quantum.limit) {
@@ -99,7 +112,7 @@ export default class HomeView extends React.Component {
 
       const randomProb = this.getRandomIntInclusive(1, 100);
       if (randomProb <= this.props.spawnRate) {
-        this.props.dispatch(ProcessActions.spawnProcessNew(this.props.time, 10, 8));
+        this.createNewProcessWithRandomValues();
       }
       this.props.dispatch(TimeActions.timeTick());
       setTimeout(this.timeoutCallback, this.props.speed);
@@ -147,6 +160,11 @@ export default class HomeView extends React.Component {
     this.props.dispatch(IOActions.setIOLimit(lim));
   }
 
+  _durationAvg(average) {
+    const avg = Number(average);
+    this.props.dispatch(setDurationAverage(avg));
+  }
+
   render () {
     return (
       <div className='container text-center'>
@@ -160,7 +178,9 @@ export default class HomeView extends React.Component {
                         quantumLimit={::this._quantumLimit}
                         quantum={this.props.quantum}
                         IO={this.props.IO}
-                        IOLimit={::this._IOLimit}/>
+                        IOLimit={::this._IOLimit}
+                        durationAverage={this.props.durationAverage}
+                        setDurationAverage={::this._durationAvg}/>
             <button onClick={this._pause.bind(this)}>Pause</button>
             <button onClick={this._resume.bind(this)}>Resume</button>
           </div>

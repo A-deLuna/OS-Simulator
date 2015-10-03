@@ -29,8 +29,8 @@ export function tickRunningProcess() {
   return {type: ProcessConstants.TICK_RUNNING_PROCESS};
 }
 
-export function moveRunningToFinished() {
-  return {type: ProcessConstants.MOVE_RUNNING_TO_FINISHED};
+export function moveRunningToFinished(time) {
+  return {type: ProcessConstants.MOVE_RUNNING_TO_FINISHED, payload: {time: time}};
 }
 
 export function moveRunningToReady() {
@@ -41,8 +41,8 @@ export function moveRunningToWaiting() {
   return {type: ProcessConstants.MOVE_RUNNING_TO_WAITING};
 }
 
-export function takeOneWaitingToUsingIO() {
-  return {type: ProcessConstants.TAKE_ONE_WAITING_TO_USINGIO};
+export function takeOneWaitingToUsingIO(goalTime) {
+  return {type: ProcessConstants.TAKE_ONE_WAITING_TO_USINGIO, payload: {goalTime: goalTime}};
 }
 
 export function moveUsingIOToReady() {

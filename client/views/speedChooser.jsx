@@ -9,10 +9,16 @@ export class SpeedChooser extends React.Component {
 
   render () {
     return (
-      <div className="btn-group">
-        <button className="btn btn-default" onClick={::this.props.slow}>Slow</button>
-        <button className="btn btn-default" onClick={::this.props.normal}>Normal</button>
-        <button className="btn btn-default" onClick={::this.props.fast}>Fast</button>
+      <div className='row'>
+        <div className='col-md-5'>
+          <span>Clock Speed: </span>
+        </div>
+          <div className="btn-group">
+            <button className="btn btn-success" onClick={::this.props.slow}>Slow</button>
+            <button className="btn btn-warning" onClick={::this.props.normal}>Normal</button>
+            <button className="btn btn-danger" onClick={::this.props.fast}>Fast</button>
+          </div>
+
       </div>
     );
   }

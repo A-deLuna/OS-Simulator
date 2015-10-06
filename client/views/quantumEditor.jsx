@@ -11,10 +11,14 @@ export default class QuantumEditor extends React.Component {
   }
   render () {
     return (
-      <div>
-        <span>quantum: </span>
-        <input type='text' onChange={this.handleChange.bind(this)}
-                           value={this.props.quantum.limit}/>
+      <div className='row'>
+        <div className='col-md-5'>
+          <span>quantum: </span>
+        </div>
+        <div className='col-md-5'>
+          <input type='text' onChange={this.handleChange.bind(this)}
+                             value={this.props.quantum.limit}/>
+        </div>
       </div>
     );
   }

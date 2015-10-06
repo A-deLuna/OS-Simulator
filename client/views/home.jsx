@@ -167,9 +167,9 @@ export default class HomeView extends React.Component {
 
   render () {
     return (
-      <div className='container text-center'>
+      <div className='container-fluid text-center'>
         <div className='row'>
-          <div className='col-md-3'>
+          <div className='col-md-3 bg-info'>
             <Properties slow={::this._slowClock}
                         normal={::this._normalClock}
                         fast={::this._fastClock}
@@ -180,11 +180,11 @@ export default class HomeView extends React.Component {
                         IO={this.props.IO}
                         IOLimit={::this._IOLimit}
                         durationAverage={this.props.durationAverage}
-                        setDurationAverage={::this._durationAvg}/>
-            <button onClick={this._pause.bind(this)}>Pause</button>
-            <button onClick={this._resume.bind(this)}>Resume</button>
+                        setDurationAverage={::this._durationAvg}
+                        pause={this._pause.bind(this)}
+                        resume={this._resume.bind(this)}/>
           </div>
-          <div className='col-md-9'>
+          <div className='col-md-9 bg-warning'>
             <div className='row'>
               <Clock time={this.props.time}/>
               <Lists processes={this.props.processes}/>

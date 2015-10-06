@@ -1,9 +1,10 @@
 import { createReducer } from 'utils';
-import { SET_LIMIT, QUANTUM_TICK, RESTART_QUANTUM} from '../constants/Quantum';
+import { SET_LIMIT, QUANTUM_TICK, RESTART_QUANTUM, DISABLE_QUANTUM, ENABLE_QUANTUM } from '../constants/Quantum';
 
 const initialState = {
   limit: 5,
-  running: 0
+  running: 0,
+  enabled: true
 };
 
 export default createReducer(initialState, {
@@ -21,6 +22,16 @@ export default createReducer(initialState, {
     return Object.assign({}, state, {
       running: 0
     });
+  },
+  [DISABLE_QUANTUM]: (state) => {
+    return Object.assign({}, state, {
+      enabled: false
+    })
+  },
+  [ENABLE_QUANTUM]: (state) => {
+    return Object.assign({}, state, {
+      enabled: true
+    })
   }
 
 });

@@ -17,8 +17,10 @@ export function spawnProcessNew(arrivalTime, CPUTime, IOTime) {
   };
 }
 
-export function moveNewToReady() {
-  return {type: ProcessConstants.MOVE_NEW_TO_READY};
+export function moveNewToReady(count) {
+  return {type: ProcessConstants.MOVE_NEW_TO_READY, payload: {
+    size: count
+  }};
 }
 
 export function takeOneReadyToRunning() {

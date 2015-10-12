@@ -8,9 +8,9 @@ const initialState = {
   waitingIOProcesses: [],
   usingIOProcess: {},
   finishedProcesses: [],
-  newListLimit: 20,
-  readyListLimit: 20,
-  waitingListLimit: 20
+  newListLimit: 10,
+  readyListLimit: 10,
+  waitingListLimit: 10
 };
 
 export default createReducer(initialState, {
@@ -29,11 +29,11 @@ export default createReducer(initialState, {
     });
   },
 
-  [ProcessConstants.MOVE_NEW_TO_READY] : (state) => {
+  [ProcessConstants.MOVE_NEW_TO_READY] : (state, payload) => {
     return Object.assign({}, state, {
       readyProcesses: [...state.readyProcesses,
-          ...state.newProcesses]},
-          {newProcesses: []});
+          ...state.newProcesses.slice(0, payload.size)]},
+          {newProcesses: [...state.newProcesses.slice(payload.size)]});
   },
 
   [ProcessConstants.TAKE_ONE_READY_TO_RUNNING] : (state) => {

@@ -72,7 +72,9 @@ export default class HomeView extends React.Component {
     if (this.props.clock === 'RUNNING') {
       if (this.isRunningEmpty()) {
         this.props.dispatch(ProcessActions.takeOneReadyToRunning());
-        this.props.dispatch(ProcessActions.moveNewToReady());
+        const sizediff = this.props.processes.readyListLimit -
+          this.props.processes.readyProcesses.length;
+        this.props.dispatch(ProcessActions.moveNewToReady(sizediff));
       }
 
       if (this.isUsingIOEmpty()) {

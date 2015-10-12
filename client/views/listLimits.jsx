@@ -36,7 +36,7 @@ export default class ListLimits extends React.Component {
         </div>
         <div className='row'>
           <div className='col-md-5'>
-            <span>new ready limit:</span>
+            <span>ready list limit:</span>
           </div>
           <div className='col-md-3'>
             <input type='text' value={this.props.readyListLimit}
@@ -45,7 +45,7 @@ export default class ListLimits extends React.Component {
         </div>
         <div className='row'>
           <div className='col-md-5'>
-            <span>new waitingIO limit:</span>
+            <span>waitingIO list limit:</span>
           </div>
           <div className='col-md-3'>
             <input type='text' value={this.props.waitingListLimit}

@@ -165,6 +165,14 @@ export default class HomeView extends React.Component {
     this.props.dispatch(setDurationAverage(avg));
   }
 
+  _enableQuantum() {
+    this.props.dispatch(QuantumActions.enableQuantum());
+  }
+
+  _disableQuantum() {
+    this.props.dispatch(QuantumActions.disableQuantum());
+  }
+
   render () {
     return (
       <div className='container-fluid text-center'>
@@ -182,7 +190,9 @@ export default class HomeView extends React.Component {
                         durationAverage={this.props.durationAverage}
                         setDurationAverage={::this._durationAvg}
                         pause={this._pause.bind(this)}
-                        resume={this._resume.bind(this)}/>
+                        resume={this._resume.bind(this)}
+                        enableQuantum={::this._enableQuantum}
+                        disableQuantum={::this._disableQuantum} />
           </div>
           <div className='col-md-9 bg-warning'>
             <div className='row'>

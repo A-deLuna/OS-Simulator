@@ -26,12 +26,12 @@ export default createReducer(initialState, {
   [DISABLE_QUANTUM]: (state) => {
     return Object.assign({}, state, {
       enabled: false
-    })
+    });
   },
   [ENABLE_QUANTUM]: (state) => {
     return Object.assign({}, state, {
       enabled: true
-    })
+    });
   }
 
 });

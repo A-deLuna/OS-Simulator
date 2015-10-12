@@ -20,7 +20,9 @@ export default class Properties extends React.Component {
     durationAverage: React.PropTypes.number.isRequired,
     setDurationAverage: React.PropTypes.func.isRequired,
     pause: React.PropTypes.func.isRequired,
-    resume: React.PropTypes.func.isRequired
+    resume: React.PropTypes.func.isRequired,
+    enableQuantum: React.PropTypes.func.isRequired,
+    disableQuantum: React.PropTypes.func.isRequired
   }
 
   render() {
@@ -47,7 +49,8 @@ export default class Properties extends React.Component {
         <QuantumEditor quantum={this.props.quantum} quantumLimit={this.props.quantumLimit}/>
         <IOEditor IO={this.props.IO} setIOLimit={this.props.IOLimit}/>
         <DurationAverage setDurationAverage={this.props.setDurationAverage} durationAverage={this.props.durationAverage}/>
-        <AlgorithmChooser />
+        <AlgorithmChooser enableQuantum={this.props.enableQuantum}
+                          disableQuantum={this.props.disableQuantum} />
       </div>
     );
   }

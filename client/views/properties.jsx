@@ -5,6 +5,7 @@ import QuantumEditor from './quantumEditor';
 import IOEditor from './IOEditor';
 import DurationAverage from './durationAverage';
 import AlgorithmChooser from './algorithmChooser';
+import ListLimits from './listLimits';
 
 export default class Properties extends React.Component {
   static propTypes = {
@@ -22,7 +23,13 @@ export default class Properties extends React.Component {
     pause: React.PropTypes.func.isRequired,
     resume: React.PropTypes.func.isRequired,
     enableQuantum: React.PropTypes.func.isRequired,
-    disableQuantum: React.PropTypes.func.isRequired
+    disableQuantum: React.PropTypes.func.isRequired,
+    newListLimit: React.PropTypes.number.isRequired,
+    readyListLimit: React.PropTypes.number.isRequired,
+    waitingListLimit: React.PropTypes.number.isRequired,
+    setNewListLimit: React.PropTypes.func.isRequired,
+    setReadyListLimit: React.PropTypes.func.isRequired,
+    setWaitingListLimit: React.PropTypes.func.isRequired
   }
 
   render() {
@@ -51,6 +58,12 @@ export default class Properties extends React.Component {
         <DurationAverage setDurationAverage={this.props.setDurationAverage} durationAverage={this.props.durationAverage}/>
         <AlgorithmChooser enableQuantum={this.props.enableQuantum}
                           disableQuantum={this.props.disableQuantum} />
+        <ListLimits newListLimit={this.props.newListLimit}
+		    readyListLimit={this.props.readyListLimit}
+		    waitingListLimit={this.props.waitingListLimit}
+                    setNewListLimit={this.props.setNewListLimit}
+                    setReadyListLimit={this.props.setReadyListLimit}
+                    setWaitingListLimit={this.props.setWaitingListLimit} />
       </div>
     );
   }

@@ -107,9 +107,11 @@ export default class HomeView extends React.Component {
       }
 
 
-      const randomProb = this.getRandomIntInclusive(1, 100);
-      if (randomProb <= this.props.spawnRate) {
-        this.createNewProcessWithRandomValues();
+      if (this.props.processes.newProcesses.length < this.props.processes.newListLimit) {
+        const randomProb = this.getRandomIntInclusive(1, 100);
+        if (randomProb <= this.props.spawnRate) {
+          this.createNewProcessWithRandomValues();
+        }
       }
       this.props.dispatch(TimeActions.timeTick());
       setTimeout(this.timeoutCallback, this.props.speed);
@@ -170,6 +172,21 @@ export default class HomeView extends React.Component {
     this.props.dispatch(QuantumActions.disableQuantum());
   }
 
+  _setNewListLimit(limit) {
+    const n = Number(limit);
+    this.props.dispatch(ProcessActions.setNewListLimit(n));
+  }
+
+  _setReadyListLimit(limit) {
+    const n = Number(limit);
+    this.props.dispatch(ProcessActions.setReadyListLimit(n));
+  }
+
+  _setWaitingListLimit(limit) {
+    const n = Number(limit);
+    this.props.dispatch(ProcessActions.setWaitingListLimit(n));
+  }
+
   render () {
     return (
       <div className='container-fluid text-center'>
@@ -189,7 +206,13 @@ export default class HomeView extends React.Component {
                         pause={this._pause.bind(this)}
                         resume={this._resume.bind(this)}
                         enableQuantum={::this._enableQuantum}
-                        disableQuantum={::this._disableQuantum} />
+                        disableQuantum={::this._disableQuantum}
+                        newListLimit={this.props.processes.newListLimit}
+                        readyListLimit={this.props.processes.readyListLimit}
+                        waitingListLimit={this.props.processes.waitingListLimit}
+                        setNewListLimit={::this._setNewListLimit}
+                        setReadyListLimit={::this._setReadyListLimit}
+                        setWaitingListLimit={::this._setWaitingListLimit} />
           </div>
           <div className='col-md-9 bg-warning'>
             <div className='row'>

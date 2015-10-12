@@ -48,3 +48,15 @@ export function takeOneWaitingToUsingIO(goalTime) {
 export function moveUsingIOToReady() {
   return {type: ProcessConstants.MOVE_USINGIO_TO_READY};
 }
+
+export function setNewListLimit (limit) {
+  return {type: ProcessConstants.NEW_LIST_LIMIT, payload: { limit: limit }};
+}
+
+export function setReadyListLimit (limit) {
+  return {type: ProcessConstants.READY_LIST_LIMIT, payload: { limit: limit }};
+}
+export function setWaitingListLimit (limit) {
+  return {type: ProcessConstants.WAITING_LIST_LIMIT, payload: { limit: limit }};
+}
+

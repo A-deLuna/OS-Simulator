@@ -70,45 +70,42 @@ export default class HomeView extends React.Component {
 
   timeoutCallback () {
     if (this.props.clock === 'RUNNING') {
-      if (this.isUsingIOEmpty()) {
-        this.props.dispatch(ProcessActions.takeOneWaitingToUsingIO(this.props.IO.limit));
-      }
-
       if (this.isRunningEmpty()) {
         this.props.dispatch(ProcessActions.takeOneReadyToRunning());
         this.props.dispatch(ProcessActions.moveNewToReady());
       }
 
-      if (!this.isUsingIOEmpty()) {
-        this.props.dispatch(IOActions.tickIO());
-
-        if (this.props.IO.running >= this.props.processes.usingIOProcess.IOGoalTime) {
-          this.props.dispatch(ProcessActions.moveUsingIOToReady());
-          this.props.dispatch(IOActions.restartIO());
-        }
+      if (this.isUsingIOEmpty()) {
+        this.props.dispatch(ProcessActions.takeOneWaitingToUsingIO(this.props.IO.limit));
       }
 
       if (!this.isRunningEmpty()) {
-        this.props.dispatch(ProcessActions.tickRunningProcess());
-        this.props.dispatch(QuantumActions.quantumTick());
-
         const runningProcess = this.props.processes.runningProcess;
-
-        if (runningProcess.currentCPUTime === runningProcess.IOTime) {
-          this.props.dispatch(ProcessActions.moveRunningToWaiting());
-          this.props.dispatch(QuantumActions.restartQuantum());
-        }
 
         if (runningProcess.currentCPUTime === runningProcess.totalCPUTime) {
           this.props.dispatch(ProcessActions.moveRunningToFinished(this.props.time));
           this.props.dispatch(QuantumActions.restartQuantum());
+        } else if (runningProcess.currentCPUTime === runningProcess.IOTime && !runningProcess.IOUsed) {
+          this.props.dispatch(ProcessActions.moveRunningToWaiting());
+          this.props.dispatch(QuantumActions.restartQuantum());
+        } else if (this.props.quantum.enabled && this.props.quantum.running >= this.props.quantum.limit) {
+          this.props.dispatch(ProcessActions.moveRunningToReady());
+          this.props.dispatch(QuantumActions.restartQuantum());
         } else {
-          if (this.props.quantum.running >= this.props.quantum.limit) {
-            this.props.dispatch(ProcessActions.moveRunningToReady());
-            this.props.dispatch(QuantumActions.restartQuantum());
-          }
+          this.props.dispatch(ProcessActions.tickRunningProcess());
+          this.props.dispatch(QuantumActions.quantumTick());
         }
       }
+
+      if (!this.isUsingIOEmpty()) {
+        if (this.props.IO.running >= this.props.processes.usingIOProcess.IOGoalTime) {
+          this.props.dispatch(ProcessActions.moveUsingIOToReady());
+          this.props.dispatch(IOActions.restartIO());
+        } else {
+          this.props.dispatch(IOActions.tickIO());
+        }
+      }
+
 
       const randomProb = this.getRandomIntInclusive(1, 100);
       if (randomProb <= this.props.spawnRate) {

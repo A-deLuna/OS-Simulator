@@ -30,7 +30,8 @@ export default createReducer(initialState, {
   },
   [ENABLE_QUANTUM]: (state) => {
     return Object.assign({}, state, {
-      enabled: true
+      enabled: true,
+      running: 0
     });
   }
 

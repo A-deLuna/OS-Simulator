@@ -20,7 +20,8 @@ export default createReducer(initialState, {
         totalCPUTime: payload.CPUTime,
         IOTime: payload.IOTime,
         IOGoalTime: 0,
-        finishedTime: 0
+        finishedTime: 0,
+        IOUsed: false
       }]
     });
   },
@@ -78,7 +79,7 @@ export default createReducer(initialState, {
 
   [ProcessConstants.MOVE_USINGIO_TO_READY]: (state) => {
     return Object.assign({}, state, {
-      readyProcesses: [...state.readyProcesses, state.usingIOProcess],
+      readyProcesses: [...state.readyProcesses, Object.assign({}, state.usingIOProcess, {IOUsed: true})],
       usingIOProcess: {}
     });
   }

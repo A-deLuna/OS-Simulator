@@ -8,7 +8,7 @@ export default class UsingIOView extends React.Component {
     return (
       <div>
         <h3>Using IO</h3>
-        <p>P{this.props.usingIOProcess.id}</p>
+        <p>{this.props.usingIOProcess.id ? 'P' + this.props.usingIOProcess.id : ''}</p>
       </div>
     );
   }

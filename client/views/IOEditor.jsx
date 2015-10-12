@@ -11,10 +11,14 @@ export default class IOEditor extends React.Component {
   }
   render () {
     return (
-      <div>
-        <span>IO time:</span>
-        <input type='text' value={this.props.IO.limit}
-                           onChange={this.handleChange.bind(this)}/>
+      <div className='row'>
+        <div className='col-md-5'>
+          <span>IO time:</span>
+        </div>
+        <div className='col-md-5'>
+          <input type='text' value={this.props.IO.limit}
+                             onChange={this.handleChange.bind(this)}/>
+        </div>
       </div>
     );
   }

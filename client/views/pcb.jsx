@@ -39,7 +39,7 @@ export default class PCB extends React.Component {
     });
 
     return (
-      <div>
+      <div className ='bg-success'>
         <h1>PCB</h1>
         <table className='table table-bordered'>
           <thead>

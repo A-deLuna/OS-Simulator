@@ -11,9 +11,13 @@ export default class DurationAverage extends React.Component {
   }
   render () {
     return (
-      <div>
-        <span>process duration avg.</span>
-        <input type='text' onChange={this.handleChange.bind(this)} value={this.props.durationAverage}/>
+      <div className = 'row'>
+        <div className='col-md-5'>
+          <span>process duration avg.</span>
+        </div>
+        <div className='col-md-3'>
+          <input type='text' onChange={this.handleChange.bind(this)} value={this.props.durationAverage}/>
+        </div>
       </div>
     );
   }

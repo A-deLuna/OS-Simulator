@@ -11,7 +11,7 @@ export default class RunningView extends React.Component {
     return (
         <div>
           <h3>Running</h3>
-          <p>P {this.props.runningProcess.id}</p>
+          <p>{this.props.runningProcess.id ? 'P' + this.props.runningProcess.id : ''}</p>
         </div>
     );
   }

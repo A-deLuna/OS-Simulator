@@ -39,6 +39,10 @@ export function moveRunningToReady() {
   return {type: ProcessConstants.MOVE_RUNNING_TO_READY};
 }
 
+export function moveRunningToError() {
+  return {type: ProcessConstants.MOVE_RUNNING_TO_ERROR};
+}
+
 export function moveRunningToWaiting() {
   return {type: ProcessConstants.MOVE_RUNNING_TO_WAITING};
 }
@@ -49,6 +53,10 @@ export function takeOneWaitingToUsingIO(goalTime) {
 
 export function moveUsingIOToReady() {
   return {type: ProcessConstants.MOVE_USINGIO_TO_READY};
+}
+
+export function moveUsingIOToError() {
+  return {type: ProcessConstants.MOVE_USINGIO_TO_ERROR};
 }
 
 export function setNewListLimit (limit) {

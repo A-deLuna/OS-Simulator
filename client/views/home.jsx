@@ -88,10 +88,18 @@ export default class HomeView extends React.Component {
           this.props.dispatch(ProcessActions.moveRunningToFinished(this.props.time));
           this.props.dispatch(QuantumActions.restartQuantum());
         } else if (runningProcess.currentCPUTime === runningProcess.IOTime && !runningProcess.IOUsed) {
-          this.props.dispatch(ProcessActions.moveRunningToWaiting());
+          if (this.props.processes.waitingIOProcesses.length >= this.props.processes.waitingListLimit) {
+            this.props.dispatch(ProcessActions.moveRunningToError());
+          } else {
+            this.props.dispatch(ProcessActions.moveRunningToWaiting());
+          }
           this.props.dispatch(QuantumActions.restartQuantum());
         } else if (this.props.quantum.enabled && this.props.quantum.running >= this.props.quantum.limit) {
-          this.props.dispatch(ProcessActions.moveRunningToReady());
+          if (this.props.processes.readyProcesses.length >= this.props.processes.readyListLimit) {
+            this.props.dispatch(ProcessActions.moveRunningToError());
+          } else {
+            this.props.dispatch(ProcessActions.moveRunningToReady());
+          }
           this.props.dispatch(QuantumActions.restartQuantum());
         } else {
           this.props.dispatch(ProcessActions.tickRunningProcess());
@@ -101,13 +109,16 @@ export default class HomeView extends React.Component {
 
       if (!this.isUsingIOEmpty()) {
         if (this.props.IO.running >= this.props.processes.usingIOProcess.IOGoalTime) {
-          this.props.dispatch(ProcessActions.moveUsingIOToReady());
+          if (this.props.processes.readyProcesses.length >= this.props.processes.readyListLimit) {
+            this.props.dispatch(ProcessActions.moveUsingIOToError());
+          } else {
+            this.props.dispatch(ProcessActions.moveUsingIOToReady());
+          }
           this.props.dispatch(IOActions.restartIO());
         } else {
           this.props.dispatch(IOActions.tickIO());
         }
       }
-
 
       if (this.props.processes.newProcesses.length < this.props.processes.newListLimit) {
         const randomProb = this.getRandomIntInclusive(1, 100);

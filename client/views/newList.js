@@ -4,9 +4,6 @@ export default class NewList extends React.Component {
   static propTypes = {
     newProcesses: React.PropTypes.array.isRequired
   }
-  constructor () {
-    super();
-  }
 
   render () {
     const nodes = this.props.newProcesses.map((process) => {

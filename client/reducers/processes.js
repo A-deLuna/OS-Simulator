@@ -8,6 +8,7 @@ const initialState = {
   waitingIOProcesses: [],
   usingIOProcess: {},
   finishedProcesses: [],
+  errorProcesses: [],
   newListLimit: 10,
   readyListLimit: 10,
   waitingListLimit: 10
@@ -66,6 +67,14 @@ export default createReducer(initialState, {
     });
   },
 
+  [ProcessConstants.MOVE_RUNNING_TO_ERROR]: (state) => {
+    return Object.assign({}, state, {
+      errorProcesses: [...state.errorProcesses,
+      Object.assign({}, state.runningProcess, { currentCPUTime: 'ERROR' })],
+      runningProcess: {}
+    });
+  },
+
   [ProcessConstants.MOVE_RUNNING_TO_WAITING]: (state) => {
     return Object.assign({}, state, {
       waitingIOProcesses: [...state.waitingIOProcesses, state.runningProcess],
@@ -83,6 +92,14 @@ export default createReducer(initialState, {
   [ProcessConstants.MOVE_USINGIO_TO_READY]: (state) => {
     return Object.assign({}, state, {
       readyProcesses: [...state.readyProcesses, Object.assign({}, state.usingIOProcess, {IOUsed: true})],
+      usingIOProcess: {}
+    });
+  },
+
+  [ProcessConstants.MOVE_USINGIO_TO_ERROR]: (state) => {
+    return Object.assign({}, state, {
+      errorProcesses: [...state.errorProcesses,
+      Object.assign({}, state.usingIOProcess, { currentCPUTime: 'ERROR' })],
       usingIOProcess: {}
     });
   },

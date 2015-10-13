@@ -4,9 +4,6 @@ export default class PCB extends React.Component {
   static propTypes = {
     processes: React.PropTypes.object.isRequired
   }
-  constructor() {
-    super();
-  }
 
   render () {
     const processes = this.props.processes;
@@ -16,7 +13,8 @@ export default class PCB extends React.Component {
       processes.runningProcess,
       ...processes.waitingIOProcesses,
       processes.usingIOProcess,
-      ...processes.finishedProcesses];
+      ...processes.finishedProcesses,
+      ...processes.errorProcesses];
 
    // filter empty objects with the mighty cast to bool... aka dirty hack :3
     array = array.filter(a => {return !!a.id; });
@@ -26,7 +24,7 @@ export default class PCB extends React.Component {
     const nodes = array.map((process) => {
       return (
         <tr key={process.id}>
-          <td>P {process.id}</td>
+          <td>P{process.id}</td>
           <td>{process.arrivalTime}</td>
           <td>{process.totalCPUTime}</td>
           <td>{process.currentCPUTime}</td>

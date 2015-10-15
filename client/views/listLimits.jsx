@@ -11,15 +11,21 @@ export default class ListLimits extends React.Component {
   }
 
   handleNew(e) {
-    this.props.setNewListLimit(e.target.value.trim());
+    if (e.target.value >= 0) {
+      this.props.setNewListLimit(e.target.value);
+    }
   }
 
   handleReady(e) {
-    this.props.setReadyListLimit(e.target.value.trim());
+    if (e.target.value >= 0) {
+      this.props.setReadyListLimit(e.target.value);
+    }
   }
 
   handleWaiting(e) {
-    this.props.setWaitingListLimit(e.target.value.trim());
+    if (e.target.value >= 0) {
+      this.props.setWaitingListLimit(e.target.value);
+    }
   }
 
   render () {
@@ -27,10 +33,10 @@ export default class ListLimits extends React.Component {
       <div>
         <div className='row'>
           <div className='col-md-5'>
-            <span>new list limit:</span>
+            <span>hold list limit:</span>
           </div>
           <div className='col-md-3'>
-            <input type='text' value={this.props.newListLimit}
+            <input type='number' value={this.props.newListLimit}
               onChange={this.handleNew.bind(this)}/>
           </div>
         </div>
@@ -39,7 +45,7 @@ export default class ListLimits extends React.Component {
             <span>ready list limit:</span>
           </div>
           <div className='col-md-3'>
-            <input type='text' value={this.props.readyListLimit}
+            <input type='number' value={this.props.readyListLimit}
                                onChange={this.handleReady.bind(this)}/>
           </div>
         </div>
@@ -48,7 +54,7 @@ export default class ListLimits extends React.Component {
             <span>waitingIO list limit:</span>
           </div>
           <div className='col-md-3'>
-            <input type='text' value={this.props.waitingListLimit}
+            <input type='number' value={this.props.waitingListLimit}
                                onChange={this.handleWaiting.bind(this)}/>
           </div>
         </div>

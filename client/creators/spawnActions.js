@@ -70,3 +70,7 @@ export function setWaitingListLimit (limit) {
   return {type: ProcessConstants.WAITING_LIST_LIMIT, payload: { limit: limit }};
 }
 
+export function restart() {
+  id = 1;
+  return {type: ProcessConstants.RESTART_PROCESSES};
+}

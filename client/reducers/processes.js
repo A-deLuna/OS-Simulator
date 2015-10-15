@@ -120,6 +120,10 @@ export default createReducer(initialState, {
     return Object.assign({}, state, {
       waitingListLimit: payload.limit
     });
+  },
+
+  [ProcessConstants.RESTART_PROCESSES]: () => {
+    return initialState;
   }
 
 });

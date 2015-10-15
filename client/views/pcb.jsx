@@ -22,6 +22,8 @@ export default class PCB extends React.Component {
     array.sort((a, b) => { return a.id - b.id; });
 
     const nodes = array.map((process) => {
+      const sistemTime = process.finishedTime - process.arrivalTime + 1;
+      const waitingTime = sistemTime - process.totalCPUTime - process.IOTime;
       return (
         <tr key={process.id}>
           <td>P{process.id}</td>
@@ -31,7 +33,8 @@ export default class PCB extends React.Component {
           <td>{process.IOTime}</td>
           <td>{process.IOGoalTime !== 0 ? process.IOGoalTime : ''}</td>
           <td>{process.finishedTime !== 0 ? process.finishedTime : ''}</td>
-          <td>{process.finishedTime !== 0 ? process.finishedTime - process.arrivalTime : ''}</td>
+          <td>{process.finishedTime !== 0 ? sistemTime : ''}</td>
+          <td>{process.finishedTime !== 0 ? waitingTime : ''}</td>
         </tr>
       );
     });
@@ -50,6 +53,7 @@ export default class PCB extends React.Component {
               <th>tiempo de uso de I/O</th>
               <th>tiempo de finalizacion</th>
               <th>tiempo en el sistema</th>
+              <th>tiempo de espera</th>
             </tr>
           </thead>
           <tbody>

@@ -7,7 +7,9 @@ export default class DurationAverage extends React.Component {
   }
 
   handleChange(e) {
-    this.props.setDurationAverage(e.target.value.trim());
+    if (e.target.value >= 1) {
+      this.props.setDurationAverage(e.target.value);
+    }
   }
   render () {
     return (
@@ -16,7 +18,7 @@ export default class DurationAverage extends React.Component {
           <span>process duration avg.</span>
         </div>
         <div className='col-md-3'>
-          <input type='text' onChange={this.handleChange.bind(this)} value={this.props.durationAverage}/>
+          <input type='number' onChange={this.handleChange.bind(this)} value={this.props.durationAverage}/>
         </div>
       </div>
     );

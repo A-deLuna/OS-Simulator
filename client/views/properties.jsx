@@ -22,6 +22,7 @@ export default class Properties extends React.Component {
     setDurationAverage: React.PropTypes.func.isRequired,
     pause: React.PropTypes.func.isRequired,
     resume: React.PropTypes.func.isRequired,
+    restart: React.PropTypes.func.isRequired,
     enableQuantum: React.PropTypes.func.isRequired,
     disableQuantum: React.PropTypes.func.isRequired,
     newListLimit: React.PropTypes.number.isRequired,
@@ -46,7 +47,7 @@ export default class Properties extends React.Component {
           <button className='btn btn-default' onClick={this.props.pause}>
             <span className='glyphicon glyphicon-pause'></span>
          </button>
-          <button className='btn btn-default'>
+          <button className='btn btn-default' onClick={this.props.restart}>
             <span className='glyphicon glyphicon-stop'></span>
          </button>
          </div>

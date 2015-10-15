@@ -9,7 +9,7 @@ export default class ErrorList extends React.Component {
       return (<p key={process.id}>P{process.id}</p>);
     });
     return (
-      <div>
+      <div style={{paddingLeft: '30px'}}>
         <h3>Error</h3>
         {nodes}
       </div>

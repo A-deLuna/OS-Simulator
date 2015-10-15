@@ -7,7 +7,9 @@ export default class QuantumEditor extends React.Component {
   }
 
   handleChange(e) {
-    this.props.quantumLimit(e.target.value.trim());
+    if (e.target.value >= 1) {
+      this.props.quantumLimit(e.target.value);
+    }
   }
   render () {
     return (
@@ -16,7 +18,7 @@ export default class QuantumEditor extends React.Component {
           <span>quantum: </span>
         </div>
         <div className='col-md-5'>
-          <input type='text' onChange={this.handleChange.bind(this)}
+          <input type='number' onChange={this.handleChange.bind(this)}
                              value={this.props.quantum.limit}/>
         </div>
       </div>

@@ -7,7 +7,9 @@ export default class IOEditor extends React.Component {
   }
 
   handleChange(e) {
-    this.props.setIOLimit(e.target.value.trim());
+    if (e.target.value >= 1) {
+      this.props.setIOLimit(e.target.value.trim());
+    }
   }
   render () {
     return (
@@ -16,7 +18,7 @@ export default class IOEditor extends React.Component {
           <span>IO time:</span>
         </div>
         <div className='col-md-5'>
-          <input type='text' value={this.props.IO.limit}
+          <input type='number' value={this.props.IO.limit}
                              onChange={this.handleChange.bind(this)}/>
         </div>
       </div>

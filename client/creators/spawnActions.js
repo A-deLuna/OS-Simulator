@@ -17,8 +17,10 @@ export function spawnProcessNew(arrivalTime, CPUTime, IOTime) {
   };
 }
 
-export function moveNewToReady() {
-  return {type: ProcessConstants.MOVE_NEW_TO_READY};
+export function moveNewToReady(count) {
+  return {type: ProcessConstants.MOVE_NEW_TO_READY, payload: {
+    size: count
+  }};
 }
 
 export function takeOneReadyToRunning() {
@@ -37,6 +39,10 @@ export function moveRunningToReady() {
   return {type: ProcessConstants.MOVE_RUNNING_TO_READY};
 }
 
+export function moveRunningToError() {
+  return {type: ProcessConstants.MOVE_RUNNING_TO_ERROR};
+}
+
 export function moveRunningToWaiting() {
   return {type: ProcessConstants.MOVE_RUNNING_TO_WAITING};
 }
@@ -47,4 +53,24 @@ export function takeOneWaitingToUsingIO(goalTime) {
 
 export function moveUsingIOToReady() {
   return {type: ProcessConstants.MOVE_USINGIO_TO_READY};
+}
+
+export function moveUsingIOToError() {
+  return {type: ProcessConstants.MOVE_USINGIO_TO_ERROR};
+}
+
+export function setNewListLimit (limit) {
+  return {type: ProcessConstants.NEW_LIST_LIMIT, payload: { limit: limit }};
+}
+
+export function setReadyListLimit (limit) {
+  return {type: ProcessConstants.READY_LIST_LIMIT, payload: { limit: limit }};
+}
+export function setWaitingListLimit (limit) {
+  return {type: ProcessConstants.WAITING_LIST_LIMIT, payload: { limit: limit }};
+}
+
+export function restart() {
+  id = 1;
+  return {type: ProcessConstants.RESTART_PROCESSES};
 }

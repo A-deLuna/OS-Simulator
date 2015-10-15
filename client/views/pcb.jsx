@@ -4,9 +4,6 @@ export default class PCB extends React.Component {
   static propTypes = {
     processes: React.PropTypes.object.isRequired
   }
-  constructor() {
-    super();
-  }
 
   render () {
     const processes = this.props.processes;
@@ -16,7 +13,8 @@ export default class PCB extends React.Component {
       processes.runningProcess,
       ...processes.waitingIOProcesses,
       processes.usingIOProcess,
-      ...processes.finishedProcesses];
+      ...processes.finishedProcesses,
+      ...processes.errorProcesses];
 
    // filter empty objects with the mighty cast to bool... aka dirty hack :3
     array = array.filter(a => {return !!a.id; });
@@ -24,16 +22,19 @@ export default class PCB extends React.Component {
     array.sort((a, b) => { return a.id - b.id; });
 
     const nodes = array.map((process) => {
+      const sistemTime = process.finishedTime - process.arrivalTime + 1;
+      const waitingTime = sistemTime - process.totalCPUTime - process.IOTime;
       return (
         <tr key={process.id}>
-          <td>P {process.id}</td>
+          <td>P{process.id}</td>
           <td>{process.arrivalTime}</td>
           <td>{process.totalCPUTime}</td>
           <td>{process.currentCPUTime}</td>
           <td>{process.IOTime}</td>
           <td>{process.IOGoalTime !== 0 ? process.IOGoalTime : ''}</td>
           <td>{process.finishedTime !== 0 ? process.finishedTime : ''}</td>
-          <td>{process.finishedTime !== 0 ? process.finishedTime - process.arrivalTime : ''}</td>
+          <td>{process.finishedTime !== 0 ? sistemTime : ''}</td>
+          <td>{process.finishedTime !== 0 ? waitingTime : ''}</td>
         </tr>
       );
     });
@@ -52,6 +53,7 @@ export default class PCB extends React.Component {
               <th>tiempo de uso de I/O</th>
               <th>tiempo de finalizacion</th>
               <th>tiempo en el sistema</th>
+              <th>tiempo de espera</th>
             </tr>
           </thead>
           <tbody>

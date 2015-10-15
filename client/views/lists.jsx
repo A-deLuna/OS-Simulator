@@ -5,6 +5,7 @@ import RunningView from './runningView';
 import FinishedList from './finishedList';
 import UsingIOView from './usingIOView';
 import WaitingIOList from './waitingIOList';
+import ErrorList from './errorList';
 
 export default class Lists extends React.Component {
   static propTypes = {
@@ -30,9 +31,12 @@ export default class Lists extends React.Component {
           <RunningView runningProcess={this.props.processes.runningProcess}/>
           <UsingIOView usingIOProcess={this.props.processes.usingIOProcess}/>
         </div>
-        <div className='col-md-2'>
+        <div className='col-md-1'>
           <FinishedList finishedProcesses={this.props.processes.finishedProcesses}/>
         </div>
+	<div className="col-md-1">
+	  <ErrorList errorProcesses={this.props.processes.errorProcesses}/>
+	</div>
       </div>
     );
   }

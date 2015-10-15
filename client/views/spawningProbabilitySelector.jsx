@@ -7,7 +7,9 @@ export class SpawningProbabilitySelector extends React.Component {
   }
 
   handleChange(e) {
-    this.props.setSpawningProbability(e.target.value.trim());
+    if (e.target.value >= 0 && e.target.value <= 100) {
+      this.props.setSpawningProbability(e.target.value.trim());
+    }
   }
 
   render () {
@@ -18,7 +20,7 @@ export class SpawningProbabilitySelector extends React.Component {
           <span>spawn probablility:</span>
         </div>
         <div className='col-md-5'>
-          <input type='text' onChange={this.handleChange.bind(this)}
+          <input type='number' onChange={this.handleChange.bind(this)}
                              value={spawnRate}/>
         </div>
       </div>

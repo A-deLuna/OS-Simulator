@@ -7,7 +7,7 @@ export default class IOEditor extends React.Component {
   }
 
   handleChange(e) {
-    if (e.target.value >= 1) {
+    if (e.target.value >= 1 && e.target.value <= 1000000 ) {
       this.props.setIOLimit(e.target.value.trim());
     }
   }

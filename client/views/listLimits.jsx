@@ -11,19 +11,19 @@ export default class ListLimits extends React.Component {
   }
 
   handleNew(e) {
-    if (e.target.value >= 0) {
+    if (e.target.value >= 0 && e.target.value <= 1000000) {
       this.props.setNewListLimit(e.target.value);
     }
   }
 
   handleReady(e) {
-    if (e.target.value >= 0) {
+    if (e.target.value >= 0 && e.target.value <= 1000000) {
       this.props.setReadyListLimit(e.target.value);
     }
   }
 
   handleWaiting(e) {
-    if (e.target.value >= 0) {
+    if (e.target.value >= 0 && e.target.value <= 1000000) {
       this.props.setWaitingListLimit(e.target.value);
     }
   }

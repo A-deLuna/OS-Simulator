@@ -7,7 +7,7 @@ export default class QuantumEditor extends React.Component {
   }
 
   handleChange(e) {
-    if (e.target.value >= 1) {
+    if (e.target.value >= 1 && e.target.value <= 1000000 ) {
       this.props.quantumLimit(e.target.value);
     }
   }

@@ -23,6 +23,7 @@ export default class Properties extends React.Component {
     pause: React.PropTypes.func.isRequired,
     resume: React.PropTypes.func.isRequired,
     restart: React.PropTypes.func.isRequired,
+    question: React.PropTypes.func.isRequired,
     enableQuantum: React.PropTypes.func.isRequired,
     disableQuantum: React.PropTypes.func.isRequired,
     newListLimit: React.PropTypes.number.isRequired,
@@ -46,10 +47,13 @@ export default class Properties extends React.Component {
           </button>
           <button className='btn btn-default' onClick={this.props.pause}>
             <span className='glyphicon glyphicon-pause'></span>
-         </button>
+          </button>
           <button className='btn btn-default' onClick={this.props.restart}>
             <span className='glyphicon glyphicon-stop'></span>
-         </button>
+          </button>
+          <button className='btn btn-default' onClick={this.props.question}>
+            <span className='glyphicon glyphicon-question-sign'></span>
+          </button>
          </div>
         <SpeedChooser {...this.props} />
         <SpawningProbabilitySelector setSpawningProbability={spawnHandler}

@@ -24504,6 +24504,7 @@ module.exports =
 	  _createClass(HomeView, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
+	      this._question();
 	      setTimeout(this.timeoutCallback, this.props.speed);
 	    }
 	  }, {
@@ -24613,10 +24614,16 @@ module.exports =
 	    value: function _restart() {
 	      if (window.confirm('are you sure you want to restart?')) {
 	        this.props.dispatch(TimeActions.restart());
+	        this.props.dispatch(TimeActions.pause());
 	        this.props.dispatch(ProcessActions.restart());
 	        this.props.dispatch(IOActions.restartIO());
 	        this.props.dispatch(QuantumActions.restartQuantum());
 	      }
+	    }
+	  }, {
+	    key: '_question',
+	    value: function _question() {
+	      $('#myModal').modal('show');
 	    }
 
 	    // normally you'd import an action creator, but I don't want to create
@@ -24739,6 +24746,7 @@ module.exports =
 	              pause: this._pause.bind(this),
 	              resume: this._resume.bind(this),
 	              restart: this._restart.bind(this),
+	              question: this._question.bind(this),
 	              enableQuantum: this._enableQuantum.bind(this),
 	              disableQuantum: this._disableQuantum.bind(this),
 	              newListLimit: this.props.processes.newListLimit,
@@ -24759,7 +24767,94 @@ module.exports =
 	            )
 	          )
 	        ),
-	        _react2['default'].createElement(_pcb2['default'], { processes: this.props.processes })
+	        _react2['default'].createElement(_pcb2['default'], { processes: this.props.processes }),
+	        _react2['default'].createElement(
+	          'div',
+	          { className: 'modal fade', id: 'myModal', tabIndex: '-1', role: 'dialog', 'aria-labelledby': 'myModalLabel' },
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'modal-dialog', role: 'document' },
+	            _react2['default'].createElement(
+	              'div',
+	              { className: 'modal-content' },
+	              _react2['default'].createElement(
+	                'div',
+	                { className: 'modal-header' },
+	                _react2['default'].createElement(
+	                  'button',
+	                  { type: 'button', className: 'close', 'data-dismiss': 'modal', 'aria-label': 'Close' },
+	                  _react2['default'].createElement(
+	                    'span',
+	                    { 'aria-hidden': 'true' },
+	                    '×'
+	                  )
+	                ),
+	                _react2['default'].createElement(
+	                  'h4',
+	                  { className: 'modal-title', id: 'myModalLabel' },
+	                  'Redux-OS'
+	                )
+	              ),
+	              _react2['default'].createElement(
+	                'div',
+	                { className: 'modal-body' },
+	                'Bienvendio a Redux-OS!',
+	                _react2['default'].createElement('br', null),
+	                _react2['default'].createElement('br', null),
+	                'Nota: Puedes editar los valores en vivo. Los procesos que intentan entrar a una lista llena se envian a error',
+	                _react2['default'].createElement('br', null),
+	                _react2['default'].createElement('br', null),
+	                'Los botones de play, pausa y stop hacen lo que esperas.',
+	                _react2['default'].createElement('br', null),
+	                _react2['default'].createElement('br', null),
+	                'Clock Speed:',
+	                _react2['default'].createElement('br', null),
+	                'Slow cambia a un tick cada dos segundos, Normal un tick por segundo y Fast dos ticks por segundo',
+	                _react2['default'].createElement('br', null),
+	                _react2['default'].createElement('br', null),
+	                'Spawn probability:',
+	                _react2['default'].createElement('br', null),
+	                'numero entre 0-100 inclusivo que determina la probabilidad que se cree',
+	                _react2['default'].createElement('br', null),
+	                _react2['default'].createElement('br', null),
+	                'Quantum:',
+	                _react2['default'].createElement('br', null),
+	                'Solo funciona en round robin, tiene que ser mayor a cero',
+	                _react2['default'].createElement('br', null),
+	                _react2['default'].createElement('br', null),
+	                'IO Time:',
+	                _react2['default'].createElement('br', null),
+	                'tiempo de uso de IO, el proceso cuando entra a using toma este valor',
+	                _react2['default'].createElement('br', null),
+	                _react2['default'].createElement('br', null),
+	                'Process duration average:',
+	                _react2['default'].createElement('br', null),
+	                'el tiempo de un nuevo proceso sera +- 25% de este numero mayor a cero',
+	                _react2['default'].createElement('br', null),
+	                _react2['default'].createElement('br', null),
+	                'Algorithm:',
+	                _react2['default'].createElement('br', null),
+	                'Selector de algoritmos, rr o fcfs',
+	                _react2['default'].createElement('br', null),
+	                _react2['default'].createElement('br', null),
+	                'List limits:',
+	                _react2['default'].createElement('br', null),
+	                'Tamaño de las listas de hold, ready y waiting',
+	                _react2['default'].createElement('br', null),
+	                _react2['default'].createElement('br', null)
+	              ),
+	              _react2['default'].createElement(
+	                'div',
+	                { className: 'modal-footer' },
+	                _react2['default'].createElement(
+	                  'button',
+	                  { type: 'button', className: 'btn btn-default', 'data-dismiss': 'modal' },
+	                  'Close'
+	                )
+	              )
+	            )
+	          )
+	        )
 	      );
 	    }
 	  }]);
@@ -27588,6 +27683,11 @@ module.exports =
 	            'button',
 	            { className: 'btn btn-default', onClick: this.props.restart },
 	            _react2['default'].createElement('span', { className: 'glyphicon glyphicon-stop' })
+	          ),
+	          _react2['default'].createElement(
+	            'button',
+	            { className: 'btn btn-default', onClick: this.props.question },
+	            _react2['default'].createElement('span', { className: 'glyphicon glyphicon-question-sign' })
 	          )
 	        ),
 	        _react2['default'].createElement(_speedChooser.SpeedChooser, this.props),
@@ -27623,6 +27723,7 @@ module.exports =
 	      pause: _react2['default'].PropTypes.func.isRequired,
 	      resume: _react2['default'].PropTypes.func.isRequired,
 	      restart: _react2['default'].PropTypes.func.isRequired,
+	      question: _react2['default'].PropTypes.func.isRequired,
 	      enableQuantum: _react2['default'].PropTypes.func.isRequired,
 	      disableQuantum: _react2['default'].PropTypes.func.isRequired,
 	      newListLimit: _react2['default'].PropTypes.number.isRequired,
@@ -27919,7 +28020,7 @@ module.exports =
 	  _createClass(QuantumEditor, [{
 	    key: 'handleChange',
 	    value: function handleChange(e) {
-	      if (e.target.value >= 1) {
+	      if (e.target.value >= 1 && e.target.value <= 1000000) {
 	        this.props.quantumLimit(e.target.value);
 	      }
 	    }
@@ -28023,7 +28124,7 @@ module.exports =
 	  _createClass(IOEditor, [{
 	    key: 'handleChange',
 	    value: function handleChange(e) {
-	      if (e.target.value >= 1) {
+	      if (e.target.value >= 1 && e.target.value <= 1000000) {
 	        this.props.setIOLimit(e.target.value.trim());
 	      }
 	    }
@@ -28127,7 +28228,7 @@ module.exports =
 	  _createClass(DurationAverage, [{
 	    key: 'handleChange',
 	    value: function handleChange(e) {
-	      if (e.target.value >= 1) {
+	      if (e.target.value >= 1 && e.target.value <= 1000000) {
 	        this.props.setDurationAverage(e.target.value);
 	      }
 	    }
@@ -28354,21 +28455,21 @@ module.exports =
 	  _createClass(ListLimits, [{
 	    key: 'handleNew',
 	    value: function handleNew(e) {
-	      if (e.target.value >= 0) {
+	      if (e.target.value >= 0 && e.target.value <= 1000000) {
 	        this.props.setNewListLimit(e.target.value);
 	      }
 	    }
 	  }, {
 	    key: 'handleReady',
 	    value: function handleReady(e) {
-	      if (e.target.value >= 0) {
+	      if (e.target.value >= 0 && e.target.value <= 1000000) {
 	        this.props.setReadyListLimit(e.target.value);
 	      }
 	    }
 	  }, {
 	    key: 'handleWaiting',
 	    value: function handleWaiting(e) {
-	      if (e.target.value >= 0) {
+	      if (e.target.value >= 0 && e.target.value <= 1000000) {
 	        this.props.setWaitingListLimit(e.target.value);
 	      }
 	    }

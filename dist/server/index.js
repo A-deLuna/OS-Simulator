@@ -33528,9 +33528,9 @@ module.exports =
 	  usingIOProcess: {},
 	  finishedProcesses: [],
 	  errorProcesses: [],
-	  newListLimit: 10,
-	  readyListLimit: 10,
-	  waitingListLimit: 10
+	  newListLimit: 20,
+	  readyListLimit: 20,
+	  waitingListLimit: 20
 	};
 
 	exports['default'] = (0, _utils.createReducer)(initialState, (_createReducer = {}, _defineProperty(_createReducer, ProcessConstants.SPAWN_PROCESS_NEW, function (state, payload) {

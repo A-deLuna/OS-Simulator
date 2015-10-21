@@ -9,9 +9,9 @@ const initialState = {
   usingIOProcess: {},
   finishedProcesses: [],
   errorProcesses: [],
-  newListLimit: 10,
-  readyListLimit: 10,
-  waitingListLimit: 10
+  newListLimit: 20,
+  readyListLimit: 20,
+  waitingListLimit: 20
 };
 
 export default createReducer(initialState, {

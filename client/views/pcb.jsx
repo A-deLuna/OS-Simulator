@@ -2,7 +2,8 @@ import React from 'react';
 
 export default class PCB extends React.Component {
   static propTypes = {
-    processes: React.PropTypes.object.isRequired
+    processes: React.PropTypes.object.isRequired,
+    frameSize: React.PropTypes.number.isRequired
   }
 
   render () {
@@ -22,7 +23,7 @@ export default class PCB extends React.Component {
     array.sort((a, b) => { return a.id - b.id; });
 
     const nodes = array.map((process) => {
-      const sistemTime = process.finishedTime - process.arrivalTime + 1;
+      const sistemTime = process.finishedTime - process.arrivalTime;
       const waitingTime = sistemTime - process.totalCPUTime - process.IOTime;
       return (
         <tr key={process.id}>
@@ -35,6 +36,8 @@ export default class PCB extends React.Component {
           <td>{process.finishedTime !== 0 ? process.finishedTime : ''}</td>
           <td>{process.finishedTime !== 0 ? sistemTime : ''}</td>
           <td>{process.finishedTime !== 0 ? waitingTime : ''}</td>
+          <td>{process.memory}</td>
+          <td>{Math.ceil(process.memory / this.props.frameSize)}</td>
         </tr>
       );
     });
@@ -54,6 +57,8 @@ export default class PCB extends React.Component {
               <th>tiempo de finalizacion</th>
               <th>tiempo en el sistema</th>
               <th>tiempo de espera</th>
+              <th>memoria </th>
+              <th>cant. frames </th>
             </tr>
           </thead>
           <tbody>

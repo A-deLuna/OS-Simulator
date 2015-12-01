@@ -5,14 +5,16 @@ export function setRate(rate) {
 }
 
 let id = 1;
-export function spawnProcessNew(arrivalTime, CPUTime, IOTime) {
+export function spawnProcessNew(arrivalTime, CPUTime, IOTime, memory, pages) {
   return {
     type: ProcessConstants.SPAWN_PROCESS_NEW,
     payload: {
       id: (id++),
       arrivalTime: arrivalTime,
       CPUTime: CPUTime,
-      IOTime: IOTime
+      IOTime: IOTime,
+      memory: memory,
+      pages: pages
     }
   };
 }
@@ -73,4 +75,8 @@ export function setWaitingListLimit (limit) {
 export function restart() {
   id = 1;
   return {type: ProcessConstants.RESTART_PROCESSES};
+}
+
+export function setHoldMemory (index, memory, value) {
+  return { type: ProcessConstants.UPDATE_HOLD_MEMORY, payload: { index, memory, value } };
 }

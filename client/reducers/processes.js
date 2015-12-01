@@ -1,5 +1,6 @@
 import { createReducer } from 'utils';
 import * as ProcessConstants from '../constants/Spawn';
+import * as MemoryConstants from '../constants/Memory';
 
 const initialState = {
   newProcesses: [],
@@ -11,7 +12,7 @@ const initialState = {
   errorProcesses: [],
   newListLimit: 20,
   readyListLimit: 20,
-  waitingListLimit: 20
+  waitingListLimit: 20,
 };
 
 export default createReducer(initialState, {
@@ -25,7 +26,9 @@ export default createReducer(initialState, {
         IOTime: payload.IOTime,
         IOGoalTime: 0,
         finishedTime: 0,
-        IOUsed: false
+        IOUsed: false,
+        memory: payload.memory,
+        frameList: Array.apply(null, Array(payload.pages)).map(function() { return MemoryConstants.DISK; })
       }]
     });
   },
@@ -124,6 +127,17 @@ export default createReducer(initialState, {
 
   [ProcessConstants.RESTART_PROCESSES]: () => {
     return initialState;
+  },
+
+  [ProcessConstants.UPDATE_HOLD_MEMORY]: (state, payload) => {
+    return Object.assign({}, state, {
+      newProcesses: [...state.newProcesses.slice(0, payload.index),
+      Object.assign({}, state.newProcesses[payload.index], {
+        frameList: [...state.newProcesses[payload.index].frameList.slice(0, payload.memory),
+        payload.value, ...state.newProcesses[payload.index].frameList.slice(payload.memory + 1)]
+      }),
+      ...state.newProcesses.slice(payload.index + 1)]
+    });
   }
 
 });

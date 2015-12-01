@@ -4,11 +4,15 @@ import Clock from './clock';
 import Lists from './lists';
 import PCB from './pcb';
 import Properties from './properties';
+import Modal from './modal';
+import TAP from './tap';
+import Memory from './memory';
 import * as TimeActions from '../creators/time';
 import * as SpeedActions from '../creators/speed';
 import * as ProcessActions from '../creators/spawnActions';
 import * as QuantumActions from '../creators/quantum';
 import * as IOActions from '../creators/IO';
+import * as MemoryActions from '../creators/memory';
 import { setDurationAverage } from '../creators/duration';
 
 @connect(state => ({
@@ -19,7 +23,8 @@ import { setDurationAverage } from '../creators/duration';
   processes: state.processes,
   quantum: state.quantum,
   IO: state.IO,
-  durationAverage: state.durationAverage
+  durationAverage: state.durationAverage,
+  memory: state.memory
 }))
 
 export default class HomeView extends React.Component {
@@ -32,7 +37,8 @@ export default class HomeView extends React.Component {
     processes: React.PropTypes.object.isRequired,
     quantum: React.PropTypes.object.isRequired,
     IO: React.PropTypes.object.isRequired,
-    durationAverage: React.PropTypes.number.isRequired
+    durationAverage: React.PropTypes.number.isRequired,
+    memory: React.PropTypes.object.isRequired
   }
 
   constructor () {
@@ -65,8 +71,10 @@ export default class HomeView extends React.Component {
     const high = Math.round(durationAverage * 1.25);
     const duration = this.getRandomIntInclusive(low, high);
     const ioTime = this.getRandomIntInclusive(2, duration - 1);
+    const memory = this.getRandomIntInclusive(16, 256);
+    const pages = Math.ceil(memory / this.props.memory.frameSize);
 
-    this.props.dispatch(ProcessActions.spawnProcessNew(this.props.time, duration, ioTime));
+    this.props.dispatch(ProcessActions.spawnProcessNew(this.props.time, duration, ioTime, memory, pages));
   }
 
   timeoutCallback () {
@@ -75,6 +83,25 @@ export default class HomeView extends React.Component {
         this.props.dispatch(ProcessActions.takeOneReadyToRunning());
         const sizediff = this.props.processes.readyListLimit -
           this.props.processes.readyProcesses.length;
+        // ok antes de moverlos a ready, mientras estan en hold vamos a
+        // asignarles lugar en memoria y de ahi que se muevan a ready
+        // asignar lugar en memoria consta de nomas pasarle un id al arreglo de
+        // los frames que tiene cada proceso asi que deberiamos de primero
+        // sacar el lugar en memoria que va a ocupar nuestro proceso
+
+        // para cada proceso que esta entre 0 y sizediff - 1
+        for (let i = 0; i < sizediff; i++) {
+          // si la memoria todavia no esta llena, nomas pasar el id del length
+          const length = this.props.memory.table.length;
+          const newProcesses = this.props.processes.newProcesses;
+          if (length < this.props.memory.ram / this.props.memory.frameSize) {
+            if (newProcesses[i]) {
+              this.props.dispatch(MemoryActions.setMemory(length, newProcesses[i].id));
+              // tambien notificar al proceso que tiene memoria asignada
+              this.props.dispatch(ProcessActions.setHoldMemory(i, 0, length));
+            }
+          }
+        }
         this.props.dispatch(ProcessActions.moveNewToReady(sizediff));
       }
 
@@ -268,49 +295,10 @@ export default class HomeView extends React.Component {
             </div>
           </div>
         </div>
-        <PCB processes={this.props.processes}/>
-        <div className="modal fade" id="myModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel">
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 className="modal-title" id="myModalLabel">Redux-OS</h4>
-              </div>
-              <div className="modal-body">
-                Bienvendio a Redux-OS!<br/><br/>
-
-                Nota: Puedes editar los valores en vivo. Los procesos que intentan entrar a una lista llena se envian a error<br/><br/>
-
-                Los botones de play, pausa y stop hacen lo que esperas.<br/><br/>
-
-                Clock Speed:<br/>
-                Slow cambia a un tick cada dos segundos, Normal un tick por segundo y Fast dos ticks por segundo<br/><br/>
-
-                Spawn probability:<br/>
-                numero entre 0-100 inclusivo que determina la probabilidad que se cree<br/><br/>
-
-                Quantum:<br/>
-                Solo funciona en round robin, tiene que ser mayor a cero<br/><br/>
-
-                IO Time:<br/>
-                tiempo de uso de IO, el proceso cuando entra a using toma este valor<br/><br/>
-
-                Process duration average:<br/>
-                el tiempo de un nuevo proceso sera +- 25% de este numero mayor a cero<br/><br/>
-
-                Algorithm:<br/>
-                Selector de algoritmos, rr o fcfs<br/><br/>
-
-                List limits:<br/>
-                Tamaño de las listas de hold, ready y waiting<br/><br/>
-
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <TAP processes={this.props.processes}/>
+        <Memory table={this.props.memory.table}/>
+        <PCB processes={this.props.processes} frameSize={this.props.memory.frameSize}/>
+        <Modal />
       </div>
     );
   }

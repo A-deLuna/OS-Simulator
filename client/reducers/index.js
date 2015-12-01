@@ -7,6 +7,7 @@ import processes from './processes';
 import quantum from './quantum';
 import IO from './IO';
 import durationAverage from './durationAverage';
+import memory from './memory';
 
 export default combineReducers({
   time,
@@ -16,5 +17,6 @@ export default combineReducers({
   processes,
   quantum,
   IO,
-  durationAverage
+  durationAverage,
+  memory
 });

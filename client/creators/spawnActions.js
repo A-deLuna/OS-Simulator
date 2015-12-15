@@ -84,3 +84,7 @@ export function restart() {
 export function setHoldMemory (index, memory, value) {
   return { type: ProcessConstants.UPDATE_HOLD_MEMORY, payload: { index, memory, value } };
 }
+
+export function loadNewFrame(index) {
+  return {type: ProcessConstants.UPDATE_RUNNING_MEMORY, payload: {index}};
+}

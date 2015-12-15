@@ -96,7 +96,7 @@ export default class HomeView extends React.Component {
 
   findHighlighted() {
     const runningProcess = this.props.processes.runningProcess;
-    const frameLoaded = this.props.processes.frameLoaded;
+    const frameLoaded = this.props.processes.runningProcess.frameLoaded;
     if (!this.isRunningEmpty()) return runningProcess.frameList[frameLoaded];
     else return -1;
   }
@@ -161,6 +161,9 @@ export default class HomeView extends React.Component {
           this.props.dispatch(QuantumActions.quantumTick());
           const randomProb = this.getRandomIntInclusive(1, 100);
           if (randomProb <= this.props.newFrameRate) {
+            const index = this.findMemoryPosition();
+            this.props.dispatch(ProcessActions.loadNewFrame(index));
+            this.props.dispatch(MemoryActions.setMemory(index, this.props.processes.runningProcess.id, this.props.time));
           }
         }
       }

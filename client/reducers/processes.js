@@ -2,6 +2,11 @@ import { createReducer } from 'utils';
 import * as ProcessConstants from '../constants/Spawn';
 import * as MemoryConstants from '../constants/Memory';
 
+
+function getRandomIntInclusive(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 const initialState = {
   newProcesses: [],
   readyProcesses: [],
@@ -29,7 +34,9 @@ export default createReducer(initialState, {
         finishedTime: 0,
         IOUsed: false,
         memory: payload.memory,
-        frameList: Array.apply(null, Array(payload.pages)).map(function() { return MemoryConstants.DISK; })
+        frameList: Array.apply(null, Array(payload.pages)).map(function() { return MemoryConstants.DISK; }),
+        frameLoaded: 0,
+        needsDisk: false
       }]
     });
   },
@@ -138,6 +145,18 @@ export default createReducer(initialState, {
         payload.value, ...state.newProcesses[payload.index].frameList.slice(payload.memory + 1)]
       }),
       ...state.newProcesses.slice(payload.index + 1)]
+    });
+  },
+
+  [ProcessConstants.UPDATE_RUNNING_MEMORY]: (state, payload) => {
+    const newFrame = getRandomIntInclusive(0, state.runningProcess.frameList.length - 1);
+    return Object.assign({}, state, {
+      runningProcess: Object.assign({}, state.runningProcess, {
+        frameList: [...state.runningProcess.frameList.slice(0, newFrame),
+        payload.index, ...state.runningProcess.frameList.slice(newFrame + 1)],
+        frameLoaded: newFrame,
+        needsDisk: true
+      })
     });
   }
 

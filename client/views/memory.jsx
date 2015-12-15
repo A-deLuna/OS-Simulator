@@ -2,7 +2,8 @@ import React from 'react';
 
 export default class Memory extends React.Component {
   static propTypes = {
-    table : React.PropTypes.array.isRequired
+    table : React.PropTypes.array.isRequired,
+    highlighted : React.PropTypes.number.isRequired
   }
   render () {
     const head = this.props.table.map((elem, i) => {
@@ -11,8 +12,9 @@ export default class Memory extends React.Component {
       );
     });
     const val = this.props.table.map((elem, i) => {
+      const style = i === this.props.highlighted ? {backgroundColor: 'red'} : null;
       return (
-          <td key={i}>{Number.isInteger(elem) ? 'P' : ''}{elem}</td>
+          <td key={i} style={style}>{Number.isInteger(elem.val) ? 'P' : ''}{elem.val}</td>
       );
     });
     return (

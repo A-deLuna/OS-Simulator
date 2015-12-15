@@ -4,7 +4,7 @@ import Clock from './clock';
 import Lists from './lists';
 import PCB from './pcb';
 import Properties from './properties';
-import Modal from './modal';
+// import Modal from './modal';
 import TAP from './tap';
 import Memory from './memory';
 import * as TimeActions from '../creators/time';
@@ -20,6 +20,7 @@ import { setDurationAverage } from '../creators/duration';
   speed : state.speed,
   clock : state.clock,
   spawnRate: state.spawnRate,
+  newFrameRate: state.newFrameRate,
   processes: state.processes,
   quantum: state.quantum,
   IO: state.IO,
@@ -34,6 +35,7 @@ export default class HomeView extends React.Component {
     speed : React.PropTypes.number.isRequired,
     clock : React.PropTypes.string.isRequired,
     spawnRate: React.PropTypes.number.isRequired,
+    newFrameRate: React.PropTypes.number.isRequired,
     processes: React.PropTypes.object.isRequired,
     quantum: React.PropTypes.object.isRequired,
     IO: React.PropTypes.object.isRequired,
@@ -47,6 +49,8 @@ export default class HomeView extends React.Component {
     this._pause = this._pause.bind(this);
     this.timeoutCallback = this.timeoutCallback.bind(this);
     this.createNewProcessWithRandomValues = this.createNewProcessWithRandomValues.bind(this);
+    this.findMemoryPosition = this.findMemoryPosition.bind(this);
+    this.findHighlighted = this.findHighlighted.bind(this);
   }
 
   componentDidMount () {
@@ -77,6 +81,26 @@ export default class HomeView extends React.Component {
     this.props.dispatch(ProcessActions.spawnProcessNew(this.props.time, duration, ioTime, memory, pages));
   }
 
+  findMemoryPosition() {
+    const table = this.props.memory.table;
+    let time = Number.MAX_VALUE;
+    let index = 0;
+    table.forEach((val, i) => {
+      if (val.time < time) {
+        time = val.time;
+        index = i;
+      }
+    });
+    return index;
+  }
+
+  findHighlighted() {
+    const runningProcess = this.props.processes.runningProcess;
+    const frameLoaded = this.props.processes.frameLoaded;
+    if (!this.isRunningEmpty()) return runningProcess.frameList[frameLoaded];
+    else return -1;
+  }
+
   timeoutCallback () {
     if (this.props.clock === 'RUNNING') {
       if (this.isRunningEmpty()) {
@@ -84,22 +108,17 @@ export default class HomeView extends React.Component {
         const sizediff = this.props.processes.readyListLimit -
           this.props.processes.readyProcesses.length;
         // ok antes de moverlos a ready, mientras estan en hold vamos a
-        // asignarles lugar en memoria y de ahi que se muevan a ready
         // asignar lugar en memoria consta de nomas pasarle un id al arreglo de
         // los frames que tiene cada proceso asi que deberiamos de primero
         // sacar el lugar en memoria que va a ocupar nuestro proceso
 
         // para cada proceso que esta entre 0 y sizediff - 1
+        const newProcesses = this.props.processes.newProcesses;
         for (let i = 0; i < sizediff; i++) {
-          // si la memoria todavia no esta llena, nomas pasar el id del length
-          const length = this.props.memory.table.length;
-          const newProcesses = this.props.processes.newProcesses;
-          if (length < this.props.memory.ram / this.props.memory.frameSize) {
-            if (newProcesses[i]) {
-              this.props.dispatch(MemoryActions.setMemory(length, newProcesses[i].id));
-              // tambien notificar al proceso que tiene memoria asignada
-              this.props.dispatch(ProcessActions.setHoldMemory(i, 0, length));
-            }
+          if (newProcesses[i]) {
+            const index = this.findMemoryPosition();
+            this.props.dispatch(MemoryActions.setMemory(index, newProcesses[i].id, this.props.time));
+            this.props.dispatch(ProcessActions.setHoldMemory(i, 0, index));
           }
         }
         this.props.dispatch(ProcessActions.moveNewToReady(sizediff));
@@ -112,26 +131,37 @@ export default class HomeView extends React.Component {
       if (!this.isRunningEmpty()) {
         const runningProcess = this.props.processes.runningProcess;
 
+        // process ended and needs to exit
         if (runningProcess.currentCPUTime === runningProcess.totalCPUTime) {
           this.props.dispatch(ProcessActions.moveRunningToFinished(this.props.time));
           this.props.dispatch(QuantumActions.restartQuantum());
+          // process hasnt ended but needs IO
         } else if (runningProcess.currentCPUTime === runningProcess.IOTime && !runningProcess.IOUsed) {
+          // process needs io but check if its full
           if (this.props.processes.waitingIOProcesses.length >= this.props.processes.waitingListLimit) {
             this.props.dispatch(ProcessActions.moveRunningToError());
+            // move to io
           } else {
             this.props.dispatch(ProcessActions.moveRunningToWaiting());
           }
           this.props.dispatch(QuantumActions.restartQuantum());
+          // process hasnt ennded, check if it has passed its quantum
         } else if (this.props.quantum.enabled && this.props.quantum.running >= this.props.quantum.limit) {
+          // check if its full
           if (this.props.processes.readyProcesses.length >= this.props.processes.readyListLimit) {
             this.props.dispatch(ProcessActions.moveRunningToError());
+            // move to running due to quantum
           } else {
             this.props.dispatch(ProcessActions.moveRunningToReady());
           }
           this.props.dispatch(QuantumActions.restartQuantum());
+          // process hasnt ended and doesnt need quantum, tick the process
         } else {
           this.props.dispatch(ProcessActions.tickRunningProcess());
           this.props.dispatch(QuantumActions.quantumTick());
+          const randomProb = this.getRandomIntInclusive(1, 100);
+          if (randomProb <= this.props.newFrameRate) {
+          }
         }
       }
 
@@ -204,6 +234,11 @@ export default class HomeView extends React.Component {
     this.props.dispatch(ProcessActions.setRate(prob));
   }
 
+  _newFrameProbability (probabilityF) {
+    const prob = Number(probabilityF);
+    this.props.dispatch(ProcessActions.setNewFrameRate(prob));
+  }
+
   _quantumLimit(limit) {
     const lim = Number(limit);
     this.props.dispatch(QuantumActions.setQuantumLimit(lim));
@@ -249,6 +284,7 @@ export default class HomeView extends React.Component {
   }
 
   render () {
+    const highlighted = this.findHighlighted();
     return (
       <div className='container-fluid text-center'>
         <div className='row'>
@@ -268,7 +304,9 @@ export default class HomeView extends React.Component {
                         normal={::this._normalClock}
                         fast={::this._fastClock}
                         spawnHandler={::this._spawnProbability}
+                        newFrameHandler={::this._newFrameProbability}
                         spawnRate={this.props.spawnRate}
+                        newFrameRate={this.props.newFrameRate}
                         quantumLimit={::this._quantumLimit}
                         quantum={this.props.quantum}
                         IO={this.props.IO}
@@ -296,9 +334,8 @@ export default class HomeView extends React.Component {
           </div>
         </div>
         <TAP processes={this.props.processes}/>
-        <Memory table={this.props.memory.table}/>
+        <Memory table={this.props.memory.table} highlighted={highlighted}/>
         <PCB processes={this.props.processes} frameSize={this.props.memory.frameSize}/>
-        <Modal />
       </div>
     );
   }

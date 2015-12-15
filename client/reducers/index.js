@@ -8,12 +8,14 @@ import quantum from './quantum';
 import IO from './IO';
 import durationAverage from './durationAverage';
 import memory from './memory';
+import newFrameRate from './newFrameRate';
 
 export default combineReducers({
   time,
   speed,
   clock,
   spawnRate,
+  newFrameRate,
   processes,
   quantum,
   IO,

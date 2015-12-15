@@ -13,6 +13,7 @@ const initialState = {
   newListLimit: 20,
   readyListLimit: 20,
   waitingListLimit: 20,
+  frameLoaded: 0
 };
 
 export default createReducer(initialState, {

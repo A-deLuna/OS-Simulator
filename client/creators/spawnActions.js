@@ -4,6 +4,10 @@ export function setRate(rate) {
   return {type: ProcessConstants.SET_RATE, payload: rate};
 }
 
+export function setNewFrameRate(rate) {
+  return {type: ProcessConstants.SET_FRAME_RATE, payload: rate};
+}
+
 let id = 1;
 export function spawnProcessNew(arrivalTime, CPUTime, IOTime, memory, pages) {
   return {
